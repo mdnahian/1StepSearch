@@ -22,7 +22,7 @@ public class ViewMediaActivity extends Activity {
         Intent newIntent = new Intent();
         newIntent.setAction(Intent.ACTION_VIEW);
 
-        if(uri.substring(uri.length() - 3).equals("mp4")){
+        if(uri.substring(uri.length() - 3).equals("mp4") || uri.substring(uri.length() - 3).equals("mp3")){
             newIntent.setDataAndType(Uri.parse(uri), "video/*");
         } else if(uri.substring(uri.length() - 3).equals("pdf")) {
             newIntent.setDataAndType(Uri.parse("file://"+uri), "application/pdf");

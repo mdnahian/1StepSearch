@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -41,8 +42,10 @@ import com.mdislam.onestep.CORE.ParseImages;
 import com.mdislam.onestep.CORE.ParseJobs;
 import com.mdislam.onestep.CORE.ParseMusic;
 import com.mdislam.onestep.CORE.ParseResumes;
+import com.mdislam.onestep.CORE.ParseSermons;
 import com.mdislam.onestep.CORE.ParseVideos;
 import com.mdislam.onestep.CORE.Resume;
+import com.mdislam.onestep.CORE.Sermon;
 import com.mdislam.onestep.CORE.Video;
 
 import org.json.JSONArray;
@@ -82,6 +85,9 @@ public class SearchFragment extends Fragment {
 
     private EditText searchBar;
 
+    private MediaPlayer mediaPlayer;
+    private int playbackPosition;
+
     private int tab;
 
     private ListView results;
@@ -93,8 +99,11 @@ public class SearchFragment extends Fragment {
     private ArrayList<Job> jobs;
     private ArrayList<CraigslistAd> craigslistAds;
     private ArrayList<Music> music;
+    private ArrayList<Sermon> sermons;
 
     private boolean isPlaying;
+
+    private static final String SERMON_REQUEST_URL = "sermons.php?q=";
 
     private static final String CRAIGSLIST_REQUEST_URL = "http://newyork.craigslist.org/search/sss?sort=rel&query=";
     private static final String CRAIGSLIST_PARSE_URL = "craigslist.php";
@@ -261,6 +270,12 @@ public class SearchFragment extends Fragment {
                             progressDialog.show();
 
                             break;
+                        case 7:
+                            DownloadSermonJSON downloadSermonJSON = new DownloadSermonJSON();
+                            downloadSermonJSON.execute(searchBar.getText().toString());
+
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
                     }
                 }
             }
@@ -474,6 +489,247 @@ public class SearchFragment extends Fragment {
 
 
 
+    private class DownloadSermonJSON extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            String fileContents = downloadSermonJSONFromURL(params[0]);
+
+            if(fileContents == null){
+                Log.d("Crash", "Could not download string.");
+            }
+
+            return fileContents;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            parseSermonsJSON(s);
+        }
+
+        private String downloadSermonJSONFromURL(String query){
+            StringBuilder tempBuffer = new StringBuilder();
+
+            try {
+
+                URL url = new URL(getString(R.string.baseURL)+SERMON_REQUEST_URL+Uri.encode(query, "UTF-8"));
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                InputStream is = connection.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+
+                int charRead;
+                char[] inputBuffer = new char[500];
+
+                while (true) {
+                    charRead = isr.read(inputBuffer);
+                    if (charRead <= 0) {
+                        break;
+                    }
+
+                    tempBuffer.append(String.copyValueOf(inputBuffer, 0, charRead));
+                }
+
+                return tempBuffer.toString();
+
+            } catch (IOException e ){
+                Log.d("Crash", "Could not read data.");
+            } catch (SecurityException a){
+                Log.d("Crash", "Do not have the permissions to connect to URL.");
+
+            }
+
+            return null;
+        }
+    }
+
+
+    private void parseSermonsJSON(String json){
+        ParseSermons parseSermons = new ParseSermons(json);
+        parseSermons.process();
+
+        sermons = parseSermons.getSermons();
+
+        SermonsAdapter sermonsAdapter = new SermonsAdapter();
+        results.setAdapter(sermonsAdapter);
+
+        progressDialog.dismiss();
+
+    }
+
+
+    private class SermonsAdapter extends ArrayAdapter<Sermon>{
+
+        public SermonsAdapter() {
+            super(getActivity().getApplicationContext(), R.layout.sermon_list_item, sermons);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            final Sermon sermon = getItem(position);
+
+
+            if(convertView == null){
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.sermon_list_item, parent, false);
+            }
+
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            TextView speaker = (TextView) convertView.findViewById(R.id.speaker);
+            ImageView profile = (ImageView) convertView.findViewById(R.id.profile);
+
+
+            final ImageView actionBtn = (ImageView) convertView.findViewById(R.id.actionBtn);
+
+            ImageView downloadBtn = (ImageView) convertView.findViewById(R.id.downloadBtn);
+
+
+            actionBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isPlaying){
+                        actionBtn.setImageResource(R.drawable.play);
+
+                        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
+                            playbackPosition = mediaPlayer.getCurrentPosition();
+                            mediaPlayer.pause();
+                        }
+
+                        isPlaying = false;
+                    } else{
+
+                        progressDialog.setMessage("Loading...");
+                        progressDialog.show();
+
+                        try {
+                            playAudio(sermon.getDownlaodURL());
+                        } catch(Exception e){
+                            Log.d("Crash", "Could not play sermon");
+                        }
+
+                        actionBtn.setImageResource(R.drawable.pause);
+                        isPlaying = true;
+                    }
+                }
+            });
+
+            downloadBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
+
+                    downloadSermonFromUrl(sermon.getDownlaodURL(), encodeFileName(sermon.getTitle()) + ".mp3");
+                }
+            });
+
+
+            if(sermon.getProfileBit() == null) {
+                new DownloadImageTask(profile, sermon).execute(sermon.getImageURL());
+            } else {
+                profile.setImageBitmap(sermon.getProfileBit());
+            }
+
+
+            title.setText(sermon.getTitle());
+            speaker.setText(sermon.getSpeaker());
+
+            return convertView;
+        }
+    }
+
+
+
+    private void playAudio(String url) throws Exception {
+
+        killMediaPlayer();
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setDataSource(url);
+        mediaPlayer.prepare();
+        mediaPlayer.start();
+
+        progressDialog.dismiss();
+    }
+
+
+    private void killMediaPlayer() {
+        if(mediaPlayer!=null) {
+            try {
+                mediaPlayer.release();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void downloadSermonFromUrl(String sermonURL, String fileName){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(sermonURL));
+            request.setDescription("Downloading Sermon...");
+            request.setTitle(fileName);
+
+            String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/OneStepSearch/Sermons/";
+            File resumeFile = new File(filePath);
+
+            if(resumeFile.mkdir()){
+                Log.d("Crash", "Made new Sermons folder...");
+            }
+
+            request.allowScanningByMediaScanner();
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            request.setDestinationUri(Uri.parse("file://" + filePath + fileName));
+
+            final DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+            final long downloadId = manager.enqueue(request);
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    boolean downloading = true;
+
+                    while (downloading){
+
+                        DownloadManager.Query q = new DownloadManager.Query();
+                        q.setFilterById(downloadId);
+
+                        Cursor cursor = manager.query(q);
+                        cursor.moveToFirst();
+
+                        int bytes_downloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                        int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+
+                        if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                            downloading = false;
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.hide();
+                                    Toast.makeText(getActivity().getApplicationContext(), "File Downloaded Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+
+                        cursor.close();
+                    }
+
+                }
+            }).start();
+
+
+        } else{
+            Log.d("Crash", "Could not download sermon, update os.");
+        }
+    }
 
 
     private class DownloadCraigslistString extends AsyncTask<String, Void, String>{
@@ -2409,9 +2665,17 @@ public class SearchFragment extends Fragment {
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView thumbnail;
         Video video;
+        Sermon sermon;
 
         Image image;
         int imageNum;
+
+
+        public DownloadImageTask(ImageView thumbnail, Sermon sermon){
+            this.thumbnail = thumbnail;
+            this.sermon = sermon;
+        }
+
 
         public DownloadImageTask(ImageView thumbnail, Video video) {
             this.thumbnail = thumbnail;
@@ -2444,6 +2708,8 @@ public class SearchFragment extends Fragment {
 
             if(video != null) {
                 video.setThumbnailBit(result);
+            } else if(sermon != null){
+                sermon.setProfileBit(result);
             } else{
                 image.setImageBit(result);
             }
