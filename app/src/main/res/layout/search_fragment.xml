@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/content_frame"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#930e0f"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/youtubeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/youtube"
+            android:background="@color/colorPrimaryDark" />
+
+        <ImageView
+            android:id="@+id/imageBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/images" />
+
+
+        <ImageView
+            android:id="@+id/musicBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/music" />
+
+        <ImageView
+            android:id="@+id/resumeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/resume" />
+
+
+        <ImageView
+            android:id="@+id/moreBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/more" />
+
+
+        <ImageView
+            android:id="@+id/jobBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/jobs" />
+
+
+        <ImageView
+            android:id="@+id/craigslistBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/craigslist" />
+
+
+        <ImageView
+            android:id="@+id/sermonBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/sermon" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:layout_weight="9"
+            android:background="@color/colorPrimaryDark"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:padding="3dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff" />
+
+
+        <ImageView
+            android:id="@+id/searchBtn"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingEnd="10dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp"
+            android:paddingStart="0dp"
+            android:src="@drawable/search" />
+
+
+    </LinearLayout>
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/results">
+    </ListView>
+
+    <GridView
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/results2">
+    </GridView>
+
+
+</LinearLayout>
+

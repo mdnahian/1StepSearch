@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">1 STEP</string>
+
+
+    <string name="baseURL">http://mdislam.com/static/projects/1stepsearch/</string>
+
+
+
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+
+    <string name="forgot">Forgot Password?</string>
+    <string name="signup">Sign Up</string>
+
+    <string name="parseAppId">EjTXBWMOqLyb1jbjPjH14ShUu1sZmQsxvRHd4FJV</string>
+    <string name="parseClientId">myyobGB3fQ5Q5pF7UXQ8rXhlxizfv2QUvKasYjBK</string>
+
+    <string name="youtubeAPIKey">AIzaSyBumdwEY7qaO12L0I2EAHVoFSR_XS9UHjI</string>
+
+    <string name="flickrAPIKey">73a7ba9b6ce1d7e75dc5909ab9b4336f</string>
+    <string name="flickrSecret">7a95ccdf79ed5812</string>
+
+
+    <string name="search">Search YouTube...</string>
+
+    <string name="fname">first name</string>
+    <string name="lname">last name</string>
+    <string name="email">email</string>
+    <string name="confirm">confirm password</string>
+
+    <string name="remember">Remember Me</string>
+
+    <string name="success">Sent!</string>
+    <string name="verification">A Verification Email Has Been Sent To</string>
+    <string name="resend">Resend Email</string>
+
+
+    <string-array name="nav">
+        <item>About</item>
+        <item>Buy</item>
+        <item>Downloads</item>
+        <item>Search</item>
+        <item>Sign Out</item>
+    </string-array>
+
+
+    <string name="downloads">Downloads</string>
+    <string name="about">About</string>
+    <string name="buy">Buy</string>
+
+    <string name="title">Title</string>
+    <string name="meta">000 views - Duration 0:00.</string>
+    <string name="description">This is a description of the YouTube video...</string>
+
+
+    <string name="summary">Summary</string>
+    <string name="experience">Experience</string>
+    <string name="education">Education</string>
+    <string name="skills">Skills</string>
+    <string name="other">Other</string>
+
+
+    <string name="artist">Artist: </string>
+    <string name="album">Album: </string>
+    
+</resources>
