@@ -41,6 +41,8 @@ public class ParseSermons {
                 sermon.setSpeaker(jsonObject.getString("speaker"));
                 sermon.setImageURL(jsonObject.getString("image"));
                 sermon.setDownlaodURL(jsonObject.getString("download_location"));
+                sermon.setChurch(jsonObject.getString("church"));
+                sermon.setDuration(jsonObject.getString("duration"));
 
                 sermons.add(sermon);
             }

@@ -13,6 +13,8 @@ public class Sermon {
     private String link;
     private String downlaodURL;
     private Bitmap profileBit;
+    private String church;
+    private String duration;
 
     public String getImageURL() {
         return imageURL;
@@ -60,5 +62,21 @@ public class Sermon {
 
     public void setProfileBit(Bitmap profileBit) {
         this.profileBit = profileBit;
+    }
+
+    public String getChurch() {
+        return church;
+    }
+
+    public void setChurch(String church) {
+        this.church = church;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

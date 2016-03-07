@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -48,6 +51,10 @@ public class ParentActivity extends FragmentActivity {
         setContentView(R.layout.parent_activity);
 
         checkUserSession();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         sideBtn = (ImageView) findViewById(R.id.sideBtn);
         sideBtn.setOnClickListener(new View.OnClickListener() {
@@ -112,9 +119,14 @@ public class ParentActivity extends FragmentActivity {
                         case 3:
                             clearSelection();
                             menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            search();
+                            history();
                             break;
                         case 4:
+                            clearSelection();
+                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
+                            search();
+                            break;
+                        case 5:
                             logout();
                             break;
                     }
@@ -163,6 +175,12 @@ public class ParentActivity extends FragmentActivity {
 
     private void buy(){
         Fragment fragment = new BuyFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+    private void history(){
+        Fragment fragment = new HistoryFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
@@ -220,6 +238,37 @@ public class ParentActivity extends FragmentActivity {
     }
 
 
+    public ArrayList<String> getSearches(){
+        ArrayList<String> searches = new ArrayList<>();
+        SharedPreferences sp1 = this.getSharedPreferences("SearchHistory", 0);
+        String rawHistory = sp1.getString("history", null);
+
+        if (rawHistory != null) {
+            String[] historyArray = rawHistory.split(":::");
+            for(String ha : historyArray){
+                searches.add(ha);
+            }
+        }
+
+        return searches;
+    }
+
+
+    public void addSearchQuery(String query){
+        ArrayList<String> searches = getSearches();
+
+        String rawHistory = "";
+        for(String ha : searches){
+            rawHistory = rawHistory+ha+":::";
+        }
+        rawHistory = rawHistory+query+":::";
+
+        SharedPreferences sp1 = this.getSharedPreferences("SearchHistory", 0);
+        SharedPreferences.Editor ed = sp1.edit();
+
+        ed.putString("history", rawHistory);
+        ed.apply();
+    }
 
 
 

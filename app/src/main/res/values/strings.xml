@@ -40,6 +40,7 @@
         <item>About</item>
         <item>Buy</item>
         <item>Downloads</item>
+        <item>History</item>
         <item>Search</item>
         <item>Sign Out</item>
     </string-array>
@@ -48,10 +49,11 @@
     <string name="downloads">Downloads</string>
     <string name="about">About</string>
     <string name="buy">Buy</string>
+    <string name="history">History</string>
 
     <string name="title">Title</string>
     <string name="meta">000 views - Duration 0:00.</string>
-    <string name="description">This is a description of the YouTube video...</string>
+    <string name="description">This is a description of the YouTube video&#8230;&#8230;&#8230;</string>
 
 
     <string name="summary">Summary</string>
@@ -63,5 +65,19 @@
 
     <string name="artist">Artist: </string>
     <string name="album">Album: </string>
-    
+
+
+    <string name="buy_pkg1_title">Free (Default)</string>
+    <string name="buy_pkg1_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+    <string name="buy_pkg2_title">500 Searches</string>
+    <string name="buy_pkg2_button">Buy $4.99</string>
+    <string name="buy_pkg3_title">1000 Searches</string>
+    <string name="buy_pkg3_button">Buy $9.99</string>
+
+
+    <string name="searches">0/100</string>
+
+
+    <string name="banner_ad_unit_id">ca-app-pub-1844981082243621/4845871199</string>
+
 </resources>

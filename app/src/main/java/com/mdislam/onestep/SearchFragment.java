@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +84,8 @@ public class SearchFragment extends Fragment {
     private ImageView sermonBtn;
     private ImageView craigslistBtn;
 
+    private ImageView mic;
+    protected static final int RESULT_SPEECH = 1;
 
     private EditText searchBar;
 
@@ -132,6 +136,41 @@ public class SearchFragment extends Fragment {
         tab = 1;
 
         searchBar = (EditText) rootView.findViewById(R.id.searchBar);
+
+        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    hideMic();
+                }else {
+                    showMic();
+                }
+            }
+        });
+
+
+        mic = (ImageView) rootView.findViewById(R.id.mic);
+        mic.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+
+                try {
+                    startActivityForResult(intent, RESULT_SPEECH);
+                    searchBar.setText("");
+                } catch (ActivityNotFoundException a) {
+                    Toast t = Toast.makeText(getActivity().getApplicationContext(),
+                            "Opps! Your device doesn't support Speech to Text",
+                            Toast.LENGTH_SHORT);
+                    t.show();
+                }
+            }
+        });
+
+
 
         youtubeBtn = (ImageView) rootView.findViewById(R.id.youtubeBtn);
         youtubeBtn.setOnClickListener(new View.OnClickListener() {
@@ -217,10 +256,13 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                hideMic();
+
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
                 if (InputFilter.checkNumCharacters(searchBar.getText().toString(), 0)) {
+                    ((ParentActivity) getActivity()).addSearchQuery(searchBar.getText().toString());
                     switch (tab) {
                         case 1:
                             DownloadYoutubeString downloadString = new DownloadYoutubeString();
@@ -301,6 +343,38 @@ public class SearchFragment extends Fragment {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RESULT_SPEECH: {
+                if (resultCode == getActivity().RESULT_OK && null != data) {
+
+                    ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    searchBar.setText(text.get(0));
+                }
+                break;
+            }
+
+        }
+    }
+
+
+    private void showMic(){
+        mic.setVisibility(View.VISIBLE);
+        results.setVisibility(View.GONE);
+        results2.setVisibility(View.GONE);
+
+    }
+
+    private void hideMic(){
+        mic.setVisibility(View.GONE);
+        results.setVisibility(View.VISIBLE);
+        results2.setVisibility(View.VISIBLE);
+    }
+
 
     private void youtubeTab(){
 
@@ -320,7 +394,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search YouTube...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -343,7 +417,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Images...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -362,7 +436,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Music...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -385,7 +459,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Résumé...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -439,7 +513,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Jobs...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -460,7 +534,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Craigslist...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -481,7 +555,7 @@ public class SearchFragment extends Fragment {
         String newHint = "Search Sermons...";
         searchBar.setHint(newHint);
 
-        searchBar.requestFocus();
+        showMic();
         searchBar.setText("");
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
@@ -577,6 +651,7 @@ public class SearchFragment extends Fragment {
 
             TextView title = (TextView) convertView.findViewById(R.id.title);
             TextView speaker = (TextView) convertView.findViewById(R.id.speaker);
+            TextView duration = (TextView) convertView.findViewById(R.id.duration);
             ImageView profile = (ImageView) convertView.findViewById(R.id.profile);
 
 
@@ -598,6 +673,7 @@ public class SearchFragment extends Fragment {
 
                         isPlaying = false;
                     } else{
+                        actionBtn.setImageResource(R.drawable.pause);
 
                         progressDialog.setMessage("Loading...");
                         progressDialog.show();
@@ -608,7 +684,6 @@ public class SearchFragment extends Fragment {
                             Log.d("Crash", "Could not play sermon");
                         }
 
-                        actionBtn.setImageResource(R.drawable.pause);
                         isPlaying = true;
                     }
                 }
@@ -633,7 +708,10 @@ public class SearchFragment extends Fragment {
 
 
             title.setText(sermon.getTitle());
-            speaker.setText(sermon.getSpeaker());
+            String speakernchurch = sermon.getSpeaker()+" - "+sermon.getChurch();
+            speaker.setText(speakernchurch);
+
+            duration.setText(sermon.getDuration());
 
             return convertView;
         }
@@ -1568,7 +1646,10 @@ public class SearchFragment extends Fragment {
         images = parseImages.getImages();
 
         ImageAdapter imageAdapter = new ImageAdapter();
+        results.setVisibility(View.GONE);
+        results2.setVisibility(View.VISIBLE);
         results2.setAdapter(imageAdapter);
+
 
         progressDialog.dismiss();
     }

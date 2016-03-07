@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- The main content view -->
     <FrameLayout
-        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            android:layout_gravity="bottom">
+        </com.google.android.gms.ads.AdView>
+
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,6 +41,7 @@
 
     </RelativeLayout>
 
+
     <!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"
@@ -34,4 +51,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
         android:background="#930e0f"/>
+
+
 </android.support.v4.widget.DrawerLayout>
