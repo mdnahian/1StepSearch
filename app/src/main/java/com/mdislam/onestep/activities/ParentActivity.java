@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -21,6 +21,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.mdislam.onestep.fragments.AboutFragment;
+import com.mdislam.onestep.fragments.BuyFragment;
+import com.mdislam.onestep.fragments.DownloadsFragment;
+import com.mdislam.onestep.fragments.HistoryFragment;
+import com.mdislam.onestep.R;
+import com.mdislam.onestep.fragments.SearchFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

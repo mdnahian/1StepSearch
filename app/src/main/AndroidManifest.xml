@@ -20,7 +20,7 @@
 
 
         <activity
-            android:name=".LoginActivity">
+            android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,40 +28,40 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignupActivity">
+        <activity android:name=".activities.SignupActivity">
 
         </activity>
 
-        <activity android:name=".SignupSuccessfulActivity">
+        <activity android:name=".activities.SignupSuccessfulActivity">
 
         </activity>
 
-        <activity android:name=".ForgotActivity">
+        <activity android:name=".activities.ForgotActivity">
 
         </activity>
 
-        <activity android:name=".ParentActivity"
+        <activity android:name=".activities.ParentActivity"
             android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name=".ViewMediaActivity">
+        <activity android:name=".activities.ViewMediaActivity">
 
         </activity>
 
-        <activity android:name=".VideoViewerActivty"
+        <activity android:name=".activities.VideoViewerActivty"
             android:screenOrientation="landscape">
         </activity>
 
-        <activity android:name=".ViewResumeActivity">
+        <activity android:name=".activities.ViewResumeActivity">
 
         </activity>
 
-        <activity android:name=".ViewJobActivity">
+        <activity android:name=".activities.ViewJobActivity">
 
         </activity>
 
-        <activity android:name=".ViewInWebActivity">
+        <activity android:name=".activities.ViewInWebActivity">
 
         </activity>
 

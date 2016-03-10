@@ -1,6 +1,8 @@
-package com.mdislam.onestep.CORE;
+package com.mdislam.onestep.parsers;
 
 import android.util.Log;
+
+import com.mdislam.onestep.data.Music;
 
 import org.json.JSONArray;
 import org.json.JSONException;

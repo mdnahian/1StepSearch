@@ -1,4 +1,4 @@
-package com.mdislam.onestep.CORE;
+package com.mdislam.onestep.core;
 
 /**
  * Created by mdislam on 12/22/15.

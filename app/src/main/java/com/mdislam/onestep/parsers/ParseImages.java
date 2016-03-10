@@ -1,4 +1,6 @@
-package com.mdislam.onestep.CORE;
+package com.mdislam.onestep.parsers;
+
+import com.mdislam.onestep.data.Image;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,7 +11,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.mdislam.onestep.CORE.InputFilter;
+import com.mdislam.onestep.R;
+import com.mdislam.onestep.core.InputFilter;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;

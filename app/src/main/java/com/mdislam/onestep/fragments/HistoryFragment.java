@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.mdislam.onestep.R;
+import com.mdislam.onestep.activities.ParentActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;

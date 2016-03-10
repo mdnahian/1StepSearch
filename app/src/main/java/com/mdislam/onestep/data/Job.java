@@ -1,4 +1,4 @@
-package com.mdislam.onestep.CORE;
+package com.mdislam.onestep.data;
 
 import java.io.Serializable;
 

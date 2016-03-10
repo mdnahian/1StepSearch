@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mdislam.onestep.R;
+import com.mdislam.onestep.activities.ViewMediaActivity;
 
 import java.io.File;
 import java.util.ArrayList;

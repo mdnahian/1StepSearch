@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.mdislam.onestep.R;
 
 /**
  * Created by mdislam on 12/29/15.

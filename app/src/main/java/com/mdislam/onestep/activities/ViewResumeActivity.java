@@ -1,4 +1,4 @@
-package com.mdislam.onestep;
+package com.mdislam.onestep.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 
-import com.mdislam.onestep.CORE.Resume;
+import com.mdislam.onestep.R;
+import com.mdislam.onestep.data.Resume;
 
 /**
  * Created by mdislam on 1/7/16.
