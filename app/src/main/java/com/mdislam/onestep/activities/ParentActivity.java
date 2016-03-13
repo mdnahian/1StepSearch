@@ -1,11 +1,15 @@
 package com.mdislam.onestep.activities;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -21,11 +25,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.mdislam.onestep.R;
 import com.mdislam.onestep.fragments.AboutFragment;
 import com.mdislam.onestep.fragments.BuyFragment;
 import com.mdislam.onestep.fragments.DownloadsFragment;
 import com.mdislam.onestep.fragments.HistoryFragment;
-import com.mdislam.onestep.R;
 import com.mdislam.onestep.fragments.SearchFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -77,7 +81,7 @@ public class ParentActivity extends FragmentActivity {
 
         leftDrawer.setAdapter(new NavigationAdapter(this, nav));
 
-        search();
+        search(new TextView(this));
     }
 
 
@@ -108,29 +112,19 @@ public class ParentActivity extends FragmentActivity {
                 public void onClick(View v) {
                     switch (position) {
                         case 0:
-                            clearSelection();
-                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            about();
+                            about(menuItem);
                             break;
                         case 1:
-                            clearSelection();
-                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            buy();
+                            buy(menuItem);
                             break;
                         case 2:
-                            clearSelection();
-                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            downloads();
+                            downloads(menuItem);
                             break;
                         case 3:
-                            clearSelection();
-                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            history();
+                            history(menuItem);
                             break;
                         case 4:
-                            clearSelection();
-                            menuItem.setBackgroundColor(Color.parseColor("#780B0C"));
-                            search();
+                            search(menuItem);
                             break;
                         case 5:
                             logout();
@@ -151,50 +145,58 @@ public class ParentActivity extends FragmentActivity {
         }
 
 
-        private void clearSelection(){
-            for(TextView menuItem : menuItems){
-                menuItem.setBackgroundColor(Color.parseColor("#930e0f"));
-            }
-        }
-
-
-
-
-
     }
 
 
 
-    private void downloads(){
+    private void clearSelection(TextView currentItem){
+        for(TextView menuItem : menuItems){
+            menuItem.setBackgroundColor(Color.parseColor("#930e0f"));
+        }
+
+        currentItem.setBackgroundColor(Color.parseColor("#780B0C"));
+    }
+
+
+
+
+    private void downloads(TextView currentItem){
+        clearSelection(currentItem);
         Fragment fragment = new DownloadsFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
-
-
-    private void about(){
+    private void about(TextView currentItem){
+        clearSelection(currentItem);
         Fragment fragment = new AboutFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
-    private void buy(){
+    private void buy(TextView currentItem){
+        clearSelection(currentItem);
         Fragment fragment = new BuyFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
-    private void history(){
+    private void history(TextView currentItem){
+        clearSelection(currentItem);
         Fragment fragment = new HistoryFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
-    private void search(){
-        Fragment fragment = new SearchFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    private void search(TextView currentItem){
+        if(isOnline()) {
+            clearSelection(currentItem);
+            Fragment fragment = new SearchFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        } else {
+            notConnectedDialog();
+        }
     }
 
 
@@ -211,21 +213,21 @@ public class ParentActivity extends FragmentActivity {
             query.findInBackground(new FindCallback<ParseSession>() {
                 @Override
                 public void done(List<ParseSession> sessions, ParseException e) {
-                    if(e == null){
-                        if(sessions.size() == MAX_SESSIONS){
-                            for(ParseSession session: sessions){
-                                if(session.getCreatedAt().after(ParseSession.getCurrentSessionInBackground().getResult().getCreatedAt())){
+                    if (e == null) {
+                        if (sessions.size() == MAX_SESSIONS) {
+                            for (ParseSession session : sessions) {
+                                if (session.getCreatedAt().after(ParseSession.getCurrentSessionInBackground().getResult().getCreatedAt())) {
                                     session.deleteInBackground();
                                     logout();
-                                } else{
+                                } else {
                                     session.deleteInBackground();
                                     break;
                                 }
                             }
-                        } else{
-                            Log.d("Crash", "Number of sessions for "+ParseUser.getCurrentUser().getUsername()+": "+Integer.toString(sessions.size()));
+                        } else {
+                            Log.d("Crash", "Number of sessions for " + ParseUser.getCurrentUser().getUsername() + ": " + Integer.toString(sessions.size()));
                         }
-                    } else{
+                    } else {
                         Log.d("Crash", "Session does not exist.");
                     }
                 }
@@ -276,7 +278,36 @@ public class ParentActivity extends FragmentActivity {
         ed.apply();
     }
 
+    public boolean isOnline() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
 
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public void notConnectedDialog(){
+        new AlertDialog.Builder(ParentActivity.this)
+                .setTitle("Cannot Connect to Internet")
+                .setMessage("You are not connected to the internet.")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(R.drawable.alert)
+                .show();
+        downloads(new TextView(this));
+    }
 
 
 }
