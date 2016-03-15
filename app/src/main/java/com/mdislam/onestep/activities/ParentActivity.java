@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -52,6 +53,7 @@ public class ParentActivity extends FragmentActivity {
     private ImageView sideBtn;
     private ArrayList<TextView> menuItems;
 
+    private static final String HISTORY_PREFS = "SearchHistory";
     private static final int MAX_SESSIONS = 3;
 
 
@@ -248,7 +250,7 @@ public class ParentActivity extends FragmentActivity {
 
     public ArrayList<String> getSearches(){
         ArrayList<String> searches = new ArrayList<>();
-        SharedPreferences sp1 = this.getSharedPreferences("SearchHistory", 0);
+        SharedPreferences sp1 = this.getSharedPreferences(HISTORY_PREFS, 0);
         String rawHistory = sp1.getString("history", null);
 
         if (rawHistory != null) {
@@ -262,20 +264,48 @@ public class ParentActivity extends FragmentActivity {
     }
 
 
+    public void clearHistory(){
+        SharedPreferences sp = this.getSharedPreferences(HISTORY_PREFS, 0);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.clear();
+        ed.commit();
+
+        Toast.makeText(getApplicationContext(), "History Cleared", Toast.LENGTH_SHORT).show();
+    }
+
+
     public void addSearchQuery(String query){
-        ArrayList<String> searches = getSearches();
 
-        String rawHistory = "";
-        for(String ha : searches){
-            rawHistory = rawHistory+ha+":::";
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if(parseUser != null){
+
+            if((parseUser.getInt("currentNumOfSearches")+1) >= parseUser.getInt("numOfSearches")){
+                maxSearchesMet(parseUser.getInt("numOfSearches"));
+            } else {
+
+                ArrayList<String> searches = getSearches();
+
+                String rawHistory = "";
+                for(String ha : searches){
+                    rawHistory = rawHistory+ha+":::";
+                }
+                rawHistory = rawHistory+query+":::";
+
+                SharedPreferences sp1 = this.getSharedPreferences(HISTORY_PREFS, 0);
+                SharedPreferences.Editor ed = sp1.edit();
+
+                ed.putString("history", rawHistory);
+                ed.apply();
+
+                if(parseUser.getInt("currentNumOfSearches") < searches.size()) {
+                    parseUser.put("currentNumOfSearches", searches.size());
+                    parseUser.saveInBackground();
+                }
+            }
+
+        } else {
+            logout();
         }
-        rawHistory = rawHistory+query+":::";
-
-        SharedPreferences sp1 = this.getSharedPreferences("SearchHistory", 0);
-        SharedPreferences.Editor ed = sp1.edit();
-
-        ed.putString("history", rawHistory);
-        ed.apply();
     }
 
     public boolean isOnline() {
@@ -293,6 +323,20 @@ public class ParentActivity extends FragmentActivity {
                     haveConnectedMobile = true;
         }
         return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public void maxSearchesMet(int numOfSearches){
+        new AlertDialog.Builder(ParentActivity.this)
+                .setTitle("Buy More Searches")
+                .setMessage("You have used up "+numOfSearches+" of your "+numOfSearches+" available searches.")
+                .setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(R.drawable.alert)
+                .show();
+        buy(new TextView(this));
     }
 
     public void notConnectedDialog(){

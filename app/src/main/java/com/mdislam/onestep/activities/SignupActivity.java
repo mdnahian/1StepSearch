@@ -116,6 +116,8 @@ public class SignupActivity extends Activity {
         user.put("fname", fname);
         user.put("lname", lname);
         user.put("isNotificationsOn", true);
+        user.put("emailVerified", false);
+        user.put("numOfSearches", 100);
 
 
         user.signUpInBackground(new SignUpCallback() {

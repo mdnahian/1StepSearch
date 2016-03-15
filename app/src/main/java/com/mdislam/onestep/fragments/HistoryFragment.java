@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.mdislam.onestep.R;
 import com.mdislam.onestep.activities.ParentActivity;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,30 +21,47 @@ import java.util.Collections;
  */
 public class HistoryFragment extends Fragment {
 
+    private ParentActivity parentActivity;
+
     private ListView historyList;
     private ArrayList<String> searches;
     private TextView numSearches;
+    private TextView clearBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.history_fragment, container, false);
 
+        parentActivity = (ParentActivity) getActivity();
+
         historyList = (ListView) rootView.findViewById(R.id.history_list);
-        searches = ((ParentActivity) getActivity()).getSearches();
-        Collections.reverse(searches);
         numSearches = (TextView) rootView.findViewById(R.id.num_searches);
+        clearBtn = (TextView) rootView.findViewById(R.id.clearBtn);
 
-        String numOfSearches  = searches.size() + "/100";
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.clearHistory();
+                showSearches();
+            }
+        });
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, searches);
-        historyList.setAdapter(arrayAdapter);
-
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        String numOfSearches  = (parseUser.getInt("currentNumOfSearches")+1) + "/" + parseUser.getInt("numOfSearches");
         numSearches.setText(numOfSearches);
 
+        showSearches();
 
         return rootView;
     }
 
+
+    private void showSearches(){
+        searches = ((ParentActivity) getActivity()).getSearches();
+        Collections.reverse(searches);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, searches);
+        historyList.setAdapter(arrayAdapter);
+    }
 
 
 }

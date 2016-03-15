@@ -31,14 +31,37 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/num_searches"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/searches"
-        android:layout_gravity="end"
-        android:padding="5dp"
-        android:textColor="#ffffff"/>
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:padding="10dp"
+        android:background="@color/colorPrimaryDark">
+
+        <TextView
+            android:id="@+id/clearBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/clearBtn"
+            android:textColor="#ffffff"
+            android:padding="5dp"
+            />
+
+        <TextView
+            android:id="@+id/num_searches"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/searches"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:padding="5dp"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/history_list"

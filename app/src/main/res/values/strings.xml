@@ -2,7 +2,7 @@
     <string name="app_name">1 STEP</string>
 
 
-    <string name="baseURL">http://mdislam.com/static/projects/1stepsearch/</string>
+    <string name="baseURL">http://aqurytech.com/projects/1stepsearch/</string>
 
 
 
@@ -76,6 +76,7 @@
 
 
     <string name="searches">0/100</string>
+    <string name="clearBtn">Clear History</string>
 
 
     <string name="banner_ad_unit_id">ca-app-pub-1844981082243621/4845871199</string>

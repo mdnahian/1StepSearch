@@ -35,7 +35,11 @@ public class LoginActivity extends Activity {
 
         try {
             Parse.enableLocalDatastore(this);
-            Parse.initialize(this, getString(R.string.parseAppId), getString(R.string.parseClientId));
+            Parse.initialize(new Parse.Configuration.Builder(this)
+                    .applicationId(getString(R.string.parseAppId))
+                    .clientKey(null)
+                    .server("http://104.236.209.241:1337/parse/").build()
+            );
             ParseInstallation.getCurrentInstallation().saveInBackground();
         } catch (Exception e){
             Log.d("Crash", "Application Crashed. Error Report Sent");
@@ -132,7 +136,7 @@ public class LoginActivity extends Activity {
                     } else {
                         new AlertDialog.Builder(LoginActivity.this)
                                 .setTitle("Confirm Email Address")
-                                .setMessage("You have not yet confirmed your email address.")
+                                .setMessage("You have not yet confirmed your email address "+user.getEmail()+".")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
