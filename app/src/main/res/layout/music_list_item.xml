@@ -21,15 +21,15 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/artist"
+            android:layout_weight="0.5"
+            android:text="@string/description"
             android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/artist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.7"
+            android:layout_weight="1.5"
             android:text="@string/app_name"
             android:textColor="#242424"/>
 
@@ -45,15 +45,15 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/album"
+            android:layout_weight="0.5"
+            android:text="@string/duration"
             android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/album"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.7"
+            android:layout_weight="1.5"
             android:text="@string/app_name"
             android:textColor="#242424"/>
 

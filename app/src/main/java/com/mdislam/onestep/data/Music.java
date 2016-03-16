@@ -10,6 +10,8 @@ public class Music {
     private String artist;
     private String album;
     private String downloadURL;
+    private String musicURL;
+    private boolean isDownloading = false;
 
     public String getTitle() {
         return title;
@@ -49,5 +51,21 @@ public class Music {
 
     public void setDownloadURL(String downloadURL) {
         this.downloadURL = downloadURL;
+    }
+
+    public String getMusicURL() {
+        return musicURL;
+    }
+
+    public void setMusicURL(String musicURL) {
+        this.musicURL = musicURL;
+    }
+
+    public boolean isDownloading() {
+        return isDownloading;
+    }
+
+    public void setIsDownloading(boolean isDownloading) {
+        this.isDownloading = isDownloading;
     }
 }

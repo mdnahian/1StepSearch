@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.mdislam.onestep.R;
 import com.mdislam.onestep.activities.ParentActivity;
+import com.mdislam.onestep.activities.VideoViewerActivty;
 import com.mdislam.onestep.data.Sermon;
 import com.mdislam.onestep.fragments.SearchFragment;
 import com.mdislam.onestep.parsers.ParseSermons;
@@ -173,29 +175,34 @@ public class SermonFragment extends Fragment {
             actionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(SearchFragment.isPlaying){
-                        actionBtn.setImageResource(R.drawable.play);
+//                    if(SearchFragment.isPlaying){
+//                        actionBtn.setImageResource(R.drawable.play);
+//
+//                        if(SearchFragment.mediaPlayer != null && SearchFragment.mediaPlayer.isPlaying()) {
+//                            SearchFragment.playbackPosition = SearchFragment.mediaPlayer.getCurrentPosition();
+//                            SearchFragment.mediaPlayer.pause();
+//                        }
+//
+//                        SearchFragment.isPlaying = false;
+//                    } else{
+//                        actionBtn.setImageResource(R.drawable.pause);
+//
+//                        progressDialog.setMessage("Loading...");
+//                        progressDialog.show();
+//
+//                        try {
+//                            SearchFragment.playAudio(sermon.getDownlaodURL());
+//                        } catch(Exception e){
+//                            Log.d("Crash", "Could not play sermon");
+//                        }
+//
+//                        SearchFragment.isPlaying = true;
+//                    }
 
-                        if(SearchFragment.mediaPlayer != null && SearchFragment.mediaPlayer.isPlaying()) {
-                            SearchFragment.playbackPosition = SearchFragment.mediaPlayer.getCurrentPosition();
-                            SearchFragment.mediaPlayer.pause();
-                        }
-
-                        SearchFragment.isPlaying = false;
-                    } else{
-                        actionBtn.setImageResource(R.drawable.pause);
-
-                        progressDialog.setMessage("Loading...");
-                        progressDialog.show();
-
-                        try {
-                            SearchFragment.playAudio(sermon.getDownlaodURL());
-                        } catch(Exception e){
-                            Log.d("Crash", "Could not play sermon");
-                        }
-
-                        SearchFragment.isPlaying = true;
-                    }
+                    Intent intent = new Intent(getActivity().getApplicationContext(), VideoViewerActivty.class);
+                    intent.putExtra("videoURL", sermon.getDownlaodURL());
+                    intent.putExtra("videoTitle", sermon.getTitle());
+                    startActivity(intent);
                 }
             });
 

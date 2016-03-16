@@ -53,7 +53,7 @@
 
     <string name="title">Title</string>
     <string name="meta">000 views - Duration 0:00.</string>
-    <string name="description">This is a description of the YouTube video&#8230;&#8230;&#8230;</string>
+    <string name="description">Description:</string>
 
 
     <string name="summary">Summary</string>
@@ -65,6 +65,7 @@
 
     <string name="artist">Artist: </string>
     <string name="album">Album: </string>
+    <string name="duration">Duration:</string>
 
 
     <string name="buy_pkg1_title">Free (Default)</string>
