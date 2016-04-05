@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_frame"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#930e0f"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/youtubeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/youtube"
+            android:background="@color/colorPrimaryDark" />
+
+        <ImageView
+            android:id="@+id/imageBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/images" />
+
+
+        <ImageView
+            android:id="@+id/musicBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/music" />
+
+        <ImageView
+            android:id="@+id/jobBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/jobs" />
+
+
+        <ImageView
+            android:id="@+id/moreBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/more" />
+
+        <ImageView
+            android:id="@+id/resumeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/resume" />
+
+        <ImageView
+            android:id="@+id/craigslistBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/craigslist" />
+
+
+        <ImageView
+            android:id="@+id/sermonBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/sermon" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:layout_weight="9"
+            android:background="@color/colorPrimaryDark"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:padding="3dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff" />
+
+
+        <ImageView
+            android:id="@+id/searchBtn"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:paddingEnd="10dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp"
+            android:paddingStart="0dp"
+            android:src="@drawable/search" />
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+
+        <fragment
+            android:name="com.onestepsearch.onestepsearch.fragments.EmptyFragment"
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/empty_fragment" />
+
+        <LinearLayout
+            android:id="@+id/homeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="3"
+            android:paddingBottom="100dp"
+            android:background="#ffffff">
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:weightSum="3">-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/youtubeCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/youtube_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"-->
+            <!--android:background="@color/colorPrimary"/>-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/imagesCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/images_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/musicCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/music_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:weightSum="3">-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/jobsCricle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/jobs_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/resumeCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/resume_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/craigslistCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/craigslist_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:weightSum="3">-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/sermonsCircle"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/sermons_circle"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:padding="10dp"/>-->
+
+            <!--</LinearLayout>-->
+
+            <TextView
+                android:id="@+id/greeting"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:text="@string/app_name"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:textColor="#242424"
+                android:fontFamily="monospace"/>
+
+
+            <ImageView
+                android:id="@+id/mic"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/mic"
+                android:padding="20dp"/>
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+
+</LinearLayout>
+
