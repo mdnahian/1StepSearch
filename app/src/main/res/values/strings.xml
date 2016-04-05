@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">1Step Search</string>
 
+    <string name="baseURL">http://1stepsearch.com/api/</string>
+
+    <string name="youtubeAPIKey">AIzaSyBumdwEY7qaO12L0I2EAHVoFSR_XS9UHjI</string>
+    <string name="flickrAPIKey">73a7ba9b6ce1d7e75dc5909ab9b4336f</string>
+    <string name="flickrSecret">7a95ccdf79ed5812</string>
+    <string name="paypalAPIKey">AYT0l3KdV1w2y63GiTee0ryf4E0UwPVYeefN0lzZyD7zMVyEFGkfQDBGBDKGi6LuZuY-qpAxWkstXrB9</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1844981082243621/4845871199</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -12,6 +20,80 @@
     <string name="history">History</string>
     <string name="search">Search</string>
 
+    <string name="search_one">Search YouTube...</string>
+
     <string name="account">My Account</string>
     <string name="signout">Sign Out</string>
+
+
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+
+    <string name="forgot">Forgot Password?</string>
+    <string name="signup">Sign Up</string>
+
+
+    <string name="apply">Apply</string>
+    <string name="contact">Contact</string>
+
+    <string name="searches">0/100</string>
+    <string name="clearBtn">Clear History</string>
+
+    <string name="title">Title</string>
+    <string name="meta">000 views - Duration 0:00.</string>
+    <string name="description">Description:</string>
+
+
+    <string name="summary">Summary</string>
+    <string name="experience">Experience</string>
+    <string name="education">Education</string>
+    <string name="skills">Skills</string>
+    <string name="other">Other</string>
+
+
+    <string name="artist">Artist: </string>
+    <string name="album">Album: </string>
+    <string name="duration">Duration:</string>
+
+
+    <string name="buy_pkg1_title">Free (Default)</string>
+    <string name="buy_pkg1_description">
+        Trail version of 1Step Search is limited to 100 searches per user.
+        Once you have used up your 100 searches, you will only have access to your downloads.
+    </string>
+
+    <string name="buy_pkg2_title">1 Month Subscription</string>
+    <string name="buy_pkg2_description">
+       Use 1Step Search for 1 month for a maximum of 400 searches.*
+    </string>
+    <string name="buy_pkg2_button">Buy $2.99</string>
+
+    <string name="buy_pkg3_title">1 Year Subscription</string>
+    <string name="buy_pkg3_description">
+        Use 1Step Search for 1 full year for a maximum of 5000 searches.*
+    </string>
+    <string name="buy_pkg3_button">Buy $6.99</string>
+
+    <string name="buy_pkg4_title">Unlimited Subscription</string>
+    <string name="buy_pkg4_description">
+        Unlimited use of 1Step Search for a full year.*
+    </string>
+    <string name="buy_pkg4_button">Buy $19.99</string>
+
+    <string name="plans">* 1Step Search has the right to cancel or alter any subscription if it violates our Terms and Conditions.</string>
+
+
+    <string name="fname">first name</string>
+    <string name="lname">last name</string>
+    <string name="email">email</string>
+    <string name="confirm">confirm password</string>
+
+    <string name="remember">Remember Me</string>
+
+    <string name="success">Sent!</string>
+    <string name="verification">A Verification Email Has Been Sent To</string>
+    <string name="resend">Resend Email</string>
+
+
 </resources>

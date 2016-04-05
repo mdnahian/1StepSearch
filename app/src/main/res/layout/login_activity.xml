@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#930e0f">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:paddingTop="50dp"
+            android:paddingBottom="125dp"
+            android:background="#930e0f">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:text="@string/app_name"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="35sp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-light"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:paddingStart="30dp"
+            android:paddingLeft="30dp"
+            android:paddingEnd="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginTop="-100dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/userField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/colorPrimary"
+                    android:inputType="text"
+                    android:padding="5dp"
+                    android:hint="@string/username"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:textSize="18sp"/>
+
+
+                <EditText
+                    android:id="@+id/passField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/colorPrimary"
+                    android:inputType="textPassword"
+                    android:padding="5dp"
+                    android:hint="@string/password"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:layout_marginTop="15dp"
+                    android:textSize="18sp"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="5"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="4"
+                        android:text="@string/remember"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"/>
+
+                    <Switch
+                        android:id="@+id/rememberSwitch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="left"
+                        android:gravity="start"/>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/loginBtn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/login"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:padding="10dp"
+                    android:clickable="true"/>
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/forgotBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/forgot"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:padding="15dp"/>
+
+
+            <TextView
+                android:id="@+id/signupBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/signup"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:padding="15dp"/>
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

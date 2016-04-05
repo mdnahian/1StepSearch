@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_gravity="top"
+            android:id="@+id/topPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="4"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="0.5"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/back"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3.5"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:text="@string/app_name"
+            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="#454545"
+            android:padding="10dp"/>
+
+
+        <TextView
+            android:id="@+id/company"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#454545"
+            android:padding="10dp"/>
+
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#454545"
+            android:padding="10dp"/>
+
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="12sp"
+            android:textColor="#454545"
+            android:gravity="end"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/applyBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/apply"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textSize="18sp"
+            android:textColor="#ffffff"
+            android:background="@color/colorPrimary"
+            android:layout_margin="10dp"/>
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>

@@ -120,7 +120,7 @@
             android:layout_margin="5dp"
             android:layout_weight="9"
             android:background="@color/colorPrimaryDark"
-            android:hint="@string/search"
+            android:hint="@string/search_one"
             android:inputType="text"
             android:padding="3dp"
             android:textColor="#ffffff"
