@@ -13,7 +13,7 @@ import com.onestepsearch.onestepsearch.R;
 public class SignupSuccessfulActivity extends MainActivity {
 
     private String toEmail;
-    private String userId;
+    private String username;
 
 
     @Override
@@ -24,13 +24,19 @@ public class SignupSuccessfulActivity extends MainActivity {
         TextView verificationMsg = (TextView) findViewById(R.id.toEmail);
         Intent intent = getIntent();
 
-//        ParseUser.logOut();
 
-        userId = intent.getStringExtra("userId");
+        username = intent.getStringExtra("username");
         toEmail = intent.getStringExtra("toEmail");
 
-        String email = getString(R.string.verification)+" "+toEmail;
-        verificationMsg.setText(email);
+        boolean isSent = intent.getBooleanExtra("isSent", false);
+        if (isSent){
+            String email = getString(R.string.verification)+" "+toEmail;
+            verificationMsg.setText(email);
+        } else {
+            ((TextView) findViewById(R.id.title)).setText("Failed!");
+            verificationMsg.setText("Could not send verification email. Please try again.");
+        }
+
 
         TextView loginBtn = (TextView) findViewById(R.id.loginBtn);
         TextView resendEmailBtn = (TextView) findViewById(R.id.resendEmailBtn);
@@ -46,7 +52,7 @@ public class SignupSuccessfulActivity extends MainActivity {
         resendEmailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendVerificationEmail(userId, toEmail);
+                sendVerificationEmail(username, toEmail, "");
             }
         });
 

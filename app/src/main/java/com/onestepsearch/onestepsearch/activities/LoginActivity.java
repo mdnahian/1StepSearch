@@ -4,13 +4,20 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.onestepsearch.onestepsearch.R;
+import com.onestepsearch.onestepsearch.core.CrudInBackground;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.OnTaskCompleted;
+import com.onestepsearch.onestepsearch.core.ParseResponse;
+import com.onestepsearch.onestepsearch.core.SavedSession;
+
+import java.util.ArrayList;
 
 
 /**
@@ -20,6 +27,7 @@ public class LoginActivity extends MainActivity {
 
 
     private boolean isSessionSaved;
+    private SavedSession savedSession;
 
 
     @Override
@@ -27,27 +35,10 @@ public class LoginActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-//        try {
-//            Parse.enableLocalDatastore(this);
-//            Parse.initialize(new Parse.Configuration.Builder(this)
-//                    .applicationId(getString(R.string.parseAppId))
-//                    .clientKey(null)
-//                    .server(getString(R.string.parseURL)).build()
-//            );
-//            ParseInstallation.getCurrentInstallation().saveInBackground();
-//        } catch (Exception e){
-//            Log.d("Crash", "Application Crashed. Error Report Sent");
-//        }
-//
-//        final ParseUser currentUser = ParseUser.getCurrentUser();
-//        if (currentUser != null) {
-//            if(currentUser.getBoolean("emailVerified")){
-//                onPostLogin();
-//            } else{
-//                ParseUser.logOut();
-//            }
-//        }
-
+        savedSession = getSavedSession();
+        if(savedSession.getUsername() != null){
+            onPostLogin();
+        }
 
         TextView logoText = (TextView) findViewById(R.id.logo);
         logoText.requestFocus();
@@ -85,7 +76,7 @@ public class LoginActivity extends MainActivity {
                 } else{
                     new AlertDialog.Builder(LoginActivity.this)
                             .setTitle("Try Again")
-                            .setMessage("Please Provide a Valid Username and Password")
+                            .setMessage("Please provide a valid username and password.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -121,43 +112,82 @@ public class LoginActivity extends MainActivity {
 
 
     private void login(String username, String password){
-//        ParseUser.logInInBackground(username, password, new LogInCallback() {
-//            public void done(final ParseUser user, ParseException e) {
-//                if (user != null) {
-//                    if (user.getBoolean("emailVerified")) {
-//                        onPostLogin();
-//                    } else {
-//                        new AlertDialog.Builder(LoginActivity.this)
-//                                .setTitle("Confirm Email Address")
-//                                .setMessage("You have not yet confirmed your email address "+user.getEmail()+".")
-//                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                    }
-//                                })
-//                                .setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        sendVerificationEmail(user.getObjectId(), user.getEmail());
-//                                    }
-//                                })
-//                                .setIcon(R.drawable.logo_red)
-//                                .show();
-//                    }
-//                } else {
-//                    new AlertDialog.Builder(LoginActivity.this)
-//                            .setTitle("Try Again")
-//                            .setMessage("Username or Password Incorrect")
-//                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                }
-//                            })
-//                            .setIcon(R.drawable.logo_red)
-//                            .show();
-//                }
-//            }
-//        });
+
+        CrudInBackground crudInBackground = new CrudInBackground(new OnTaskCompleted() {
+            @Override
+            public void onTaskComplete(String response) {
+
+                Log.d("Crash", response);
+
+                ParseResponse parseResponse = new ParseResponse(response);
+                parseResponse.execute();
+
+                if(parseResponse.isError()){
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("Try Again")
+                            .setMessage("Username or Password Incorrect")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(R.drawable.logo_red)
+                            .show();
+                } else {
+                    ArrayList objects = parseResponse.getObjects();
+
+                    if (objects != null) {
+                        savedSession = new SavedSession();
+
+                        ArrayList object = (ArrayList) objects.get(0);
+
+                        savedSession.setFname(object.get(1).toString());
+                        savedSession.setLname(object.get(2).toString());
+                        savedSession.setUsername(object.get(3).toString());
+                        savedSession.setEmail(object.get(4).toString());
+                        savedSession.setPhone(object.get(5).toString());
+                        savedSession.setEmailVerification(object.get(7).toString());
+                        savedSession.setNumOfSearches(Integer.parseInt(String.valueOf(object.get(8))));
+                        savedSession.setCurrentNumOfSearches(Integer.parseInt(String.valueOf(object.get(9))));
+                        savedSession.setPlan(object.get(10).toString());
+                        savedSession.setPlanExpiration(object.get(11).toString());
+
+                        if(savedSession.getUsername() != null && savedSession.getEmailVerification().equals("true")){
+                            createSavedSession(savedSession);
+                            onPostLogin();
+                        } else {
+                            new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Confirm Email Address")
+                                .setMessage("You have not yet confirmed your email address "+savedSession.getEmail()+".")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        sendVerificationEmail(savedSession.getUsername(), savedSession.getEmail(), "");
+                                    }
+                                })
+                                .setIcon(R.drawable.logo_red)
+                                .show();
+                        }
+
+
+                    }
+
+                }
+
+
+            }
+        });
+
+        String sql = "SELECT * FROM users WHERE username='"+username+"' AND password='"+password+"'";
+
+        crudInBackground.execute(sql, getString(R.string.crudURL), getString(R.string.crudApiKey));
+
+
     }
 
 
@@ -165,6 +195,7 @@ public class LoginActivity extends MainActivity {
 
     private void onPostLogin(){
         Intent intent = new Intent(LoginActivity.this, ParentActivity.class);
+        intent.putExtra("SavedSession", savedSession);
         this.startActivity(intent);
         finish();
     }

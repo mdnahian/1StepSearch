@@ -30,6 +30,7 @@ import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.VideoViewerActivty;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Video;
 import com.onestepsearch.onestepsearch.parsers.ParseVideos;
 
@@ -62,12 +63,17 @@ public class YoutubeFragment extends Fragment {
     private static final String YOUTUBE_REQUEST_URL = "youtube.php";
 
 
+    private SavedSession savedSession;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.list_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (ListView) rootView.findViewById(R.id.results);
 
@@ -162,7 +168,7 @@ public class YoutubeFragment extends Fragment {
         videos = parseVideos.getVideos();
 
         if(videos.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString(), savedSession);
 
             for(Video video : videos){
                 DownloadVideoData downloadVideoData = new DownloadVideoData(video);

@@ -25,7 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onestepsearch.onestepsearch.R;
+import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.fragments.searchfragments.CraigslistFragment;
 import com.onestepsearch.onestepsearch.fragments.searchfragments.ImageFragment;
 import com.onestepsearch.onestepsearch.fragments.searchfragments.JobsFragment;
@@ -69,9 +71,20 @@ public class SearchFragment extends Fragment {
     private int tabSet = 2;
 
 
+    private ParentActivity parentActivity;
+    private SavedSession savedSession;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.search_fragment, container, false);
+
+        parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
+        if(savedSession.getUsername().equals("")){
+            parentActivity.logout();
+        }
 
         tab = 1;
 
@@ -108,10 +121,10 @@ public class SearchFragment extends Fragment {
         homeView = (LinearLayout) rootView.findViewById(R.id.homeView);
 
         greeting = (TextView) rootView.findViewById(R.id.greeting);
-//        String strGreeting = "Hello, "+ ParseUser.getCurrentUser().getString("fname")+"\n"+
-//                "Current Plan: "+ParseUser.getCurrentUser().getString("plan")+"\n"+
-//                "Searches: "+ParseUser.getCurrentUser().getInt("currentNumOfSearches");
-//        greeting.setText(strGreeting);
+        String strGreeting = "Hello, "+ savedSession.getFname()+"\n"+
+                "Current Plan: "+savedSession.getPlan()+"\n"+
+                "Searches: "+savedSession.getCurrentNumOfSearches()+"/"+savedSession.getNumOfSearches();
+        greeting.setText(strGreeting);
 
         mic = (ImageView) rootView.findViewById(R.id.mic);
         mic.setOnClickListener(new View.OnClickListener() {
@@ -444,6 +457,7 @@ public class SearchFragment extends Fragment {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Bundle bundle = new Bundle();
             bundle.putSerializable("query", searchBar.getText().toString());
+            bundle.putSerializable("SavedSession", savedSession);
 
             switch (tab) {
                 case 1:

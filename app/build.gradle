@@ -26,5 +26,4 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.paypal.sdk:paypal-android-sdk:2.13.3'
-    compile 'org.mongodb:mongodb-driver:3.2.2'
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onestepsearch.onestepsearch.R;
@@ -39,6 +40,15 @@ public class ViewJobActivity extends Activity {
                 intent.putExtra("url", job.getLink());
                 intent.putExtra("title", job.getTitle());
                 startActivity(intent);
+            }
+        });
+
+
+        ImageView backBtn = (ImageView) findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

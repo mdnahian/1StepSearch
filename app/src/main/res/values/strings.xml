@@ -3,6 +3,9 @@
 
     <string name="baseURL">http://1stepsearch.com/api/</string>
 
+    <string name="crudURL">http://1stepsearch.com/tools/crud.php</string>
+    <string name="crudApiKey">9Tv5L7H2JGeXrtegju35MBbJ</string>
+
     <string name="youtubeAPIKey">AIzaSyBumdwEY7qaO12L0I2EAHVoFSR_XS9UHjI</string>
     <string name="flickrAPIKey">73a7ba9b6ce1d7e75dc5909ab9b4336f</string>
     <string name="flickrSecret">7a95ccdf79ed5812</string>
@@ -94,6 +97,8 @@
     <string name="success">Sent!</string>
     <string name="verification">A Verification Email Has Been Sent To</string>
     <string name="resend">Resend Email</string>
+
+    <string name="phone">phone</string>
 
 
 </resources>

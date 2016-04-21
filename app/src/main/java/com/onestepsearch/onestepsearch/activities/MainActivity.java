@@ -3,11 +3,16 @@ package com.onestepsearch.onestepsearch.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.onestepsearch.onestepsearch.R;
+import com.onestepsearch.onestepsearch.core.CrudInBackground;
+import com.onestepsearch.onestepsearch.core.OnTaskCompleted;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,43 +32,38 @@ public class MainActivity extends Activity {
     private static final String EMAIL_URL = "http://1stepsearch.com/api/send.php";
 
 
-    public void sendVerificationEmail(final String userId, final String email){
+    public void sendVerificationEmail(final String username, final String email, String key){
 
-//        ParseQuery<ParseUser> query = ParseUser.getQuery();
-//        query.getInBackground(userId, new GetCallback<ParseUser>() {
-//            boolean isSent = false;
-//
-//            @Override
-//            public void done(ParseUser user, ParseException e) {
-//                if (user.getEmail().equals(email)) {
-//                    String verificationKey = generateRandomString();
-//                    user.put("verificationKey", verificationKey);
-//                    user.saveEventually();
-//
-//                    SendEmail sendEmail = new SendEmail();
-//                    sendEmail.execute(email, "do_not_reply@1stepsearch.com", "1Step Search - Verify Your Email Address",
-//                            "Hello " + user.get("fname") + ",<br><br>" +
-//                                    "To verify your email address " + user.getEmail() + ", please go to the following link:<br>" +
-//                                    "<a href='http://1stepsearch.com/verification/" + verificationKey + "'>http://1stepsearch.com/verification/" + verificationKey + "</a>" +
-//                                    "<br><br>" +
-//                                    "<small>This email was automatically generated. If you did not register for an account at 1Step Search, please disregard this email.</small>");
-//                    isSent = true;
-//
-//                    Intent intent = new Intent(MainActivity.this, SignupSuccessfulActivity.class);
-//                    intent.putExtra("userId", userId);
-//                    intent.putExtra("toEmail", email);
-//                    startActivity(intent);
-//
-//                } else {
-//                    isSent = false;
-//                }
-//
-//                if (!isSent) {
-//                    buildDialog("Failed to Send Verification Email", "Are you sure you are a registered user?");
-//                }
-//            }
-//        });
+        if(key.equals("")){
+            final String verificationKey = generateRandomString();
 
+            CrudInBackground crudInBackground = new CrudInBackground(new OnTaskCompleted() {
+                @Override
+                public void onTaskComplete(String response) {
+                    SendEmail sendEmail = new SendEmail(username);
+                    sendEmail.execute(email, "do_not_reply@1stepsearch.com", "1Step Search - Verify Your Email Address",
+                            "Hello " + username + ",<br><br>" +
+                                    "To verify your email address " + email + ", please go to the following link:<br>" +
+                                    "<a href='http://1stepsearch.com/verification/" + verificationKey + "'>http://1stepsearch.com/verification/" + verificationKey + "</a>" +
+                                    "<br><br>" +
+                                    "<small>This email was automatically generated. If you did not register for an account at 1Step Search, please disregard this email.</small>");
+                }
+            });
+
+            String sql = "UPDATE users SET emailVerification='"+verificationKey+"' WHERE username='"+username+"' AND email='"+email+"'";
+            crudInBackground.execute(sql, getString(R.string.crudURL), getString(R.string.crudApiKey));
+
+        } else {
+
+            SendEmail sendEmail = new SendEmail(username);
+            sendEmail.execute(email, "do_not_reply@1stepsearch.com", "1Step Search - Verify Your Email Address",
+                    "Hello " + username + ",<br><br>" +
+                            "To verify your email address " + email + ", please go to the following link:<br>" +
+                            "<a href='http://1stepsearch.com/verification/" + key + "'>http://1stepsearch.com/verification/" + key + "</a>" +
+                            "<br><br>" +
+                            "<small>This email was automatically generated. If you did not register for an account at 1Step Search, please disregard this email.</small>");
+
+        }
 
 
     }
@@ -97,8 +97,16 @@ public class MainActivity extends Activity {
 
     public class SendEmail extends AsyncTask<String, Void, String> {
 
+        private String toEmail;
+        private String username;
+
+        private SendEmail(String username){
+            this.username = username;
+        }
+
         @Override
         protected String doInBackground(String... params) {
+            toEmail = params[0];
             return downloadResponseString(params[0], params[1], params[2], params[3]);
         }
 
@@ -106,9 +114,19 @@ public class MainActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            boolean isSent = true;
+
             if(s == null){
-                buildDialog("Failed to Send Verification Email", "Are you sure you are a registered user?");
+                buildDialog("Failed to Send Verification Email", "Please check that you are connected to the internet.");
+                isSent = false;
             }
+
+            Intent intent = new Intent(MainActivity.this, SignupSuccessfulActivity.class);
+            intent.putExtra("isSent", isSent);
+            intent.putExtra("username", username);
+            intent.putExtra("toEmail", toEmail);
+            startActivity(intent);
+            finish();
         }
 
 
@@ -163,5 +181,40 @@ public class MainActivity extends Activity {
         }
 
     }
+
+
+    public SavedSession getSavedSession(){
+        SharedPreferences sp1 = this.getSharedPreferences("SavedSession", 0);
+        SavedSession savedSession = new SavedSession();
+        savedSession.setFname(sp1.getString("fname", null));
+        savedSession.setLname(sp1.getString("lname", null));
+        savedSession.setUsername(sp1.getString("username", null));
+        savedSession.setEmail(sp1.getString("email", null));
+        savedSession.setPhone(sp1.getString("phone", null));
+        savedSession.setPlan(sp1.getString("plan", null));
+        savedSession.setNumOfSearches(sp1.getInt("numOfSearches", 0));
+        savedSession.setCurrentNumOfSearches(sp1.getInt("currentNumOfSearches", 0));
+
+        return savedSession;
+    }
+
+    public void createSavedSession(SavedSession savedSession){
+        SharedPreferences sp = getSharedPreferences("SavedSession", 0);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString("fname", savedSession.getFname());
+        ed.putString("lname", savedSession.getLname());
+        ed.putString("username", savedSession.getUsername());
+        ed.putString("email", savedSession.getEmail());
+        ed.putString("phone", savedSession.getPhone());
+        ed.putString("plan", savedSession.getPlan());
+        ed.putInt("numOfSearches", savedSession.getNumOfSearches());
+        ed.putInt("currentNumOfSearches", savedSession.getCurrentNumOfSearches());
+        ed.apply();
+    }
+
+
+
+
+
 
 }

@@ -62,7 +62,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/buy_pkg1_description"/>
+                    android:text="@string/buy_pkg1_description"
+                    android:textColor="@color/colorDark"/>
 
             </LinearLayout>
 
@@ -84,7 +85,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/buy_pkg2_description"/>
+                    android:text="@string/buy_pkg2_description"
+                    android:textColor="@color/colorDark"/>
 
                 <TextView
                     android:id="@+id/buy_pkg_2"
@@ -117,7 +119,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/buy_pkg3_description"/>
+                    android:text="@string/buy_pkg3_description"
+                    android:textColor="@color/colorDark"/>
 
                 <TextView
                     android:id="@+id/buy_pkg_3"
@@ -150,7 +153,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/buy_pkg4_description"/>
+                    android:text="@string/buy_pkg4_description"
+                    android:textColor="@color/colorDark"/>
 
                 <TextView
                     android:id="@+id/buy_pkg_4"
@@ -170,7 +174,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/plans"
                 android:padding="10dp"
-                android:textSize="10sp"/>
+                android:textSize="10sp"
+                android:textColor="@color/colorDark"/>
 
 
 

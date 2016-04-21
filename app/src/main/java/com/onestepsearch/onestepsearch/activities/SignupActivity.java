@@ -9,13 +9,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.onestepsearch.onestepsearch.R;
+import com.onestepsearch.onestepsearch.core.CrudInBackground;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.OnTaskCompleted;
+import com.onestepsearch.onestepsearch.core.ParseResponse;
 
 
 /**
  * Created by mdislam on 12/22/15.
  */
 public class SignupActivity extends MainActivity {
+
+    private TextView signupBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +31,11 @@ public class SignupActivity extends MainActivity {
         final EditText lnameField = (EditText) findViewById(R.id.lnameField);
         final EditText userField = (EditText) findViewById(R.id.userField);
         final EditText emailField = (EditText) findViewById(R.id.emailField);
+        final EditText phoneField = (EditText) findViewById(R.id.phoneField);
         final EditText passField = (EditText) findViewById(R.id.passField);
         final EditText confirmField = (EditText) findViewById(R.id.confirmField);
 
-        final TextView signupBtn = (TextView) findViewById(R.id.signupBtn);
+        signupBtn = (TextView) findViewById(R.id.signupBtn);
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,12 +51,8 @@ public class SignupActivity extends MainActivity {
                             if(InputFilter.checkNumCharacters(passField.getText().toString(), 6)){
                                 if(InputFilter.checkPassMatch(passField.getText().toString(), confirmField.getText().toString())){
                                     signup(fnameField.getText().toString(), lnameField.getText().toString(), userField.getText().toString(),
-                                            emailField.getText().toString(), passField.getText().toString());
+                                            emailField.getText().toString(), phoneField.getText().toString(), passField.getText().toString());
 
-                                    fnameField.setText("");
-                                    lnameField.setText("");
-                                    emailField.setText("");
-                                    userField.setText("");
                                     passField.setText("");
                                     confirmField.setText("");
                                 } else{
@@ -105,41 +107,44 @@ public class SignupActivity extends MainActivity {
     }
 
 
-    private void signup(String fname, String lname, String username, final String email, String password){
+    private void signup(String fname, String lname, final String username, final String email, String phone, String password){
 
 
-//        final ParseUser user = new ParseUser();
-//        user.setUsername(username);
-//        user.setPassword(password);
-//        user.setEmail(email);
-//        user.put("fname", fname);
-//        user.put("lname", lname);
-//        user.put("isNotificationsOn", true);
-//        user.put("emailVerified", false);
-//        user.put("numOfSearches", 100);
-//        user.put("plan", "free");
-//
-//
-//        user.signUpInBackground(new SignUpCallback() {
-//            public void done(ParseException e) {
-//                if (e == null) {
-//                    sendVerificationEmail(user.getObjectId(), user.getEmail());
-//                } else {
-//                    new AlertDialog.Builder(SignupActivity.this)
-//                            .setTitle("Sign Up Failed")
-//                            .setMessage("Username is already in use. Please try again.")
-//                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                }
-//                            })
-//                            .setIcon(R.drawable.logo_red)
-//                            .show();
-//
-//                    Log.d("Crash", e.getMessage());
-//                }
-//            }
-//        });
+        final String verificationKey = generateRandomString();
+
+        CrudInBackground crudInBackground = new CrudInBackground(new OnTaskCompleted() {
+            @Override
+            public void onTaskComplete(String response) {
+                ParseResponse parseResponse = new ParseResponse(response);
+                parseResponse.execute();
+
+                if(parseResponse.isError()){
+
+                    signupBtn.setEnabled(true);
+
+                    new AlertDialog.Builder(SignupActivity.this)
+                            .setTitle("Sign Up Failed")
+                            .setMessage("Account already exists. Please try retrieving your password or create a new account.")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(R.drawable.logo_red)
+                            .show();
+
+                } else {
+                    sendVerificationEmail(username, email, verificationKey);
+                }
+
+            }
+        });
+
+        String sql = "INSERT INTO users (first_name, last_name, username, email, phone, password, emailVerification)" +
+                " VALUES ('"+fname+"', '"+lname+"', '"+username+"', '"+email+"', '"+phone+"', '"+password+"', '"+verificationKey+"')";
+
+        crudInBackground.execute(sql, getString(R.string.crudURL), getString(R.string.crudApiKey));
+
     }
 
 
@@ -147,9 +152,8 @@ public class SignupActivity extends MainActivity {
     private void login(){
         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
         this.startActivity(intent);
+        finish();
     }
-
-
 
 
 }
