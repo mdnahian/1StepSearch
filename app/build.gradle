@@ -24,6 +24,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:cardview-v7:23.0.+'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.paypal.sdk:paypal-android-sdk:2.13.3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

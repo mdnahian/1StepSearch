@@ -1,5 +1,7 @@
 package com.onestepsearch.onestepsearch.parsers;
 
+import android.util.Log;
+
 import com.onestepsearch.onestepsearch.data.Image;
 
 import org.json.JSONArray;
@@ -29,36 +31,28 @@ public class ParseImages {
 
     public boolean process(){
 
-        boolean status;
-
-        rawData = rawData.replace("jsonFlickrApi(", "");
-        rawData = rawData.substring(0, rawData.length()-1);
-
         try{
 
             JSONObject rootObject = new JSONObject(rawData);
-            JSONObject rootObject1 = rootObject.getJSONObject("photos");
-            JSONArray rootArray = rootObject1.getJSONArray("photo");
+            JSONArray rootArray = rootObject.getJSONArray("value");
 
             for(int i=0; i<rootArray.length(); i++){
 
                 Image image = new Image();
 
                 JSONObject jsonObject = rootArray.getJSONObject(i);
-
-                image.setImageURL("http://farm" + jsonObject.getString("farm") + ".static.flickr.com/" + jsonObject.getString("server") + "/" + jsonObject.get("id") + "_" + jsonObject.getString("secret") + ".jpg");
+                image.setImageURL(jsonObject.getString("contentUrl"));
 
                 images.add(image);
             }
 
-            status = true;
-
         } catch (JSONException e){
-            status = false;
+            Log.d("Crash", e.getMessage());
+            return false;
         }
 
 
-        return status;
+        return true;
     }
 
 

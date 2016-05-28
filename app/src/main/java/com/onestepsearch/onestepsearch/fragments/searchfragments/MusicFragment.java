@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Music;
 import com.onestepsearch.onestepsearch.data.Video;
 import com.onestepsearch.onestepsearch.parsers.ParseVideos;
@@ -76,7 +77,7 @@ public class MusicFragment extends Fragment implements MediaController.MediaPlay
 
 
 
-
+    private SavedSession savedSession;
 
 
 
@@ -91,7 +92,7 @@ public class MusicFragment extends Fragment implements MediaController.MediaPlay
         parentActivity = (ParentActivity) getActivity();
 
 
-
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
 
 
@@ -194,7 +195,7 @@ public class MusicFragment extends Fragment implements MediaController.MediaPlay
         music = new ArrayList<>();
 
         if(videos.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in Music", savedSession);
 
             for(Video video : videos){
                 DownloadVideoData downloadVideoData = new DownloadVideoData(video);

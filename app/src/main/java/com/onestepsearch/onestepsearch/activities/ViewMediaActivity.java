@@ -27,7 +27,11 @@ public class ViewMediaActivity extends Activity {
         } else if(uri.substring(uri.length() - 3).equals("pdf")) {
             newIntent.setDataAndType(Uri.parse("file://"+uri), "application/pdf");
         } else {
-            newIntent.setDataAndType(Uri.parse("file://"+uri), "image/*");
+            if(uri.substring(0, 4).equals("http")){
+                newIntent.setDataAndType(Uri.parse(uri), "image/*");
+            } else {
+                newIntent.setDataAndType(Uri.parse("file://"+uri), "image/*");
+            }
         }
 
         Intent chooseIntent = Intent.createChooser(newIntent, "Open File");

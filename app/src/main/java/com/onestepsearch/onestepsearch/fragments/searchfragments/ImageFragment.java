@@ -29,8 +29,11 @@ import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.ViewMediaActivity;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
+import com.onestepsearch.onestepsearch.core.SquaredImageView;
 import com.onestepsearch.onestepsearch.data.Image;
 import com.onestepsearch.onestepsearch.parsers.ParseImages;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +54,9 @@ public class ImageFragment extends Fragment {
     private ProgressDialog progressDialog;
     private ArrayList<Image> images;
 
-    private static final String IMAGES_URL = "https://api.flickr.com/services/rest/?format=json&method=flickr.photos.search";
+    private static final String IMAGES_URL = "https://bingapis.azure-api.net/api/v5/images/search";
+
+    private SavedSession savedSession;
 
     @Nullable
     @Override
@@ -59,6 +64,8 @@ public class ImageFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.image_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (GridView) rootView.findViewById(R.id.gridView);
 
@@ -91,8 +98,9 @@ public class ImageFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if(s == null){
-                parentActivity.notConnectedDialog();
+                Log.d("Crash", "s is null");
             } else {
+//                Log.d("Crash", s);
                 parseImagesJSON(s);
             }
         }
@@ -103,7 +111,7 @@ public class ImageFragment extends Fragment {
 
             try {
 
-                URL url = new URL(IMAGES_URL+"&text="+ Uri.encode(query, "UTF-8")+"&api_key="+getString(R.string.flickrAPIKey));
+                URL url = new URL(IMAGES_URL+"?q="+ Uri.encode(query, "UTF-8")+"&mkt=en-us"+"&key="+getString(R.string.bing_search_key_2));
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 InputStream is = connection.getInputStream();
@@ -145,7 +153,7 @@ public class ImageFragment extends Fragment {
         images = parseImages.getImages();
 
         if(images.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in Images",savedSession);
 
             ImageAdapter imageAdapter = new ImageAdapter();
             results.setAdapter(imageAdapter);
@@ -160,93 +168,44 @@ public class ImageFragment extends Fragment {
 
 
 
-//        for(Image image : images){
-//            new DownloadImageTask(image).execute(image.getImageURL());
-//        }
-//
-//        new Runnable(){
-//            @Override
-//            public void run() {
-//
-//                int count = 0;
-//
-//                while(true){
-//                    for(Image image : images){
-//                        if(image.getImageBit() != null){
-//                            count++;
-//                        }
-//                    }
-//
-//                    if(count == 100){
-//                        ImageAdapter imageAdapter = new ImageAdapter();
-//                        results.setAdapter(imageAdapter);
-//
-//                        progressDialog.dismiss();
-//                        break;
-//                    }
-//                }
-//
-//            }
-//        };
     }
 
 
-    private class ImageAdapter extends ArrayAdapter<Image> {
 
+    private class ImageAdapter extends ArrayAdapter<Image>{
 
         public ImageAdapter() {
             super(getActivity().getApplicationContext(), R.layout.images_list_item, images);
         }
 
-        public class ViewHolder {
-            ImageView image;
-            boolean loaded = false;
-        }
 
-        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            SquaredImageView view = (SquaredImageView) convertView;
 
-            View row = convertView;
-            ViewHolder holder;
-
-            if(row == null){
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                row = inflater.inflate(R.layout.images_list_item, parent, false);
-                holder = new ViewHolder();
-                holder.image = (ImageView) row.findViewById(R.id.image);
-                row.setTag(holder);
-            } else {
-                holder = (ViewHolder) row.getTag();
+            if (view == null) {
+                view = new SquaredImageView(getActivity().getApplicationContext());
             }
 
+            final String url = getItem(position).getImageURL();
+            Picasso.with(getActivity()).load(url).resize(100, 100).centerCrop().into(view);
 
-            Image item = getItem(position);
-
-            if(item.getImageBit() != null) {
-
-                holder.image.setImageBitmap(item.getImageBit());
-
-                final Image imageCopy = item;
-
-                holder.image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ViewMediaActivity.class);
-                        intent.putExtra("uri", imageCopy.getImageURL());
-                        startActivity(intent);
-                    }
-                });
-
-                holder.image.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-
-                        (new AlertDialog.Builder(getActivity())
-                                .setTitle("Save Image?")
-                                .setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    (new AlertDialog.Builder(getActivity())
+                                .setTitle("What do you want to do with this image?")
+                                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
+                                    }
+                                })
+                                .setPositiveButton("Open", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(getActivity().getApplicationContext(), ViewMediaActivity.class);
+                                        intent.putExtra("uri", url);
+                                        startActivity(intent);
                                     }
                                 })
                                 .setNegativeButton("Save", new DialogInterface.OnClickListener() {
@@ -255,31 +214,21 @@ public class ImageFragment extends Fragment {
                                         progressDialog.setMessage("Loading...");
                                         progressDialog.show();
 
-                                        String filenameArray[] = imageCopy.getImageURL().split("\\.");
+                                        String filenameArray[] = url.split("\\.");
                                         String extension = filenameArray[filenameArray.length - 1];
 
-                                        downloadImage(imageCopy.getImageURL(), InputFilter.generateRandomString() + "." + extension);
+                                        downloadImage(url, InputFilter.generateRandomString() + "." + extension);
                                     }
                                 })).show();
-
-                        return false;
-                    }
-                });
-
-            } else {
-                if(!holder.loaded) {
-                    DownloadImageTask downloadImageTask = new DownloadImageTask(holder.image, item);
-                    downloadImageTask.execute(item.getImageURL());
-                    holder.loaded = true;
                 }
-            }
+            });
 
-
-            return row;
+            return view;
         }
 
 
     }
+
 
 
 
@@ -347,47 +296,6 @@ public class ImageFragment extends Fragment {
             Log.d("Crash", "Could not download image, update os.");
             progressDialog.dismiss();
         }
-    }
-
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView thumbnail;
-        Image image;
-
-        public DownloadImageTask(ImageView thumbnail, Image image) {
-            this.thumbnail = thumbnail;
-            this.image = image;
-        }
-
-        public DownloadImageTask(Image image){
-            this.image = image;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            String urldisplay = params[0];
-
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.d("Crash", "Could not download image");
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            if(result == null){
-                parentActivity.notConnectedDialog();
-            } else if(thumbnail != null) {
-                thumbnail.setImageBitmap(result);
-                image.setImageBit(result);
-            } else {
-                image.setImageBit(result);
-            }
-        }
-
     }
 
 

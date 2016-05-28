@@ -1,10 +1,12 @@
 package com.onestepsearch.onestepsearch.fragments;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,9 @@ import android.widget.TextView;
 
 import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
+import com.onestepsearch.onestepsearch.core.CrudInBackground;
+import com.onestepsearch.onestepsearch.core.OnTaskCompleted;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -33,12 +38,15 @@ public class BuyFragment extends Fragment {
 
     ParentActivity parentActivity;
 
+    private SavedSession savedSession;
+
     private TextView buy_599;
     private TextView buy_499;
     private TextView buy_399;
 
     private String selectedPlan;
     private int selectedPlanSearches;
+    private int numberOfMonths;
 
     private static PayPalConfiguration config = new PayPalConfiguration();
 
@@ -49,11 +57,16 @@ public class BuyFragment extends Fragment {
 
         parentActivity = (ParentActivity) getActivity();
 
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
+        if(savedSession.getUsername().equals("")){
+            parentActivity.logout();
+        }
+
         buy_599 = (TextView) rootView.findViewById(R.id.buy_pkg_2);
         buy_499 = (TextView) rootView.findViewById(R.id.buy_pkg_3);
         buy_399 = (TextView) rootView.findViewById(R.id.buy_pkg_4);
 
-        config.environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK);
+        config.environment(PayPalConfiguration.ENVIRONMENT_PRODUCTION);
         config.clientId(getString(R.string.paypalAPIKey));
 
 
@@ -67,6 +80,7 @@ public class BuyFragment extends Fragment {
             public void onClick(View v) {
                 selectedPlan = "$2.99 for 1 Month max 400 Searches";
                 selectedPlanSearches = 400;
+                numberOfMonths = 1;
                 onBuyButtonPressed("2.99", selectedPlan);
             }
         });
@@ -76,6 +90,7 @@ public class BuyFragment extends Fragment {
             public void onClick(View v) {
                 selectedPlan = "$6.99 for 1 Year max 5000 Searches";
                 selectedPlanSearches = 5000;
+                numberOfMonths = 12;
                 onBuyButtonPressed("6.99", selectedPlan);
             }
         });
@@ -85,6 +100,7 @@ public class BuyFragment extends Fragment {
             public void onClick(View v) {
                 selectedPlan = "$19.99 for 1 Year Unlimited Searches";
                 selectedPlanSearches = 9999;
+                numberOfMonths = 12;
                 onBuyButtonPressed("19.99", selectedPlan);
             }
         });
@@ -128,14 +144,19 @@ public class BuyFragment extends Fragment {
 
                     Calendar date = Calendar.getInstance();
                     date.setTimeInMillis(new Date().getTime());
-                    date.add(Calendar.MONTH, 1);
+                    date.add(Calendar.MONTH, numberOfMonths);
 
-//                    ParseUser user = ParseUser.getCurrentUser();
-//                    user.put("plan", selectedPlan);
-//                    user.put("numOfSearches", selectedPlanSearches);
-//                    user.put("currentNumOfSearches", 0);
-//                    user.put("plan_expiration", date.getTime());
-//                    user.saveEventually();
+                    CrudInBackground crudInBackground = new CrudInBackground(new OnTaskCompleted() {
+                        @Override
+                        public void onTaskComplete(String response) {
+
+                        }
+                    });
+
+                    String sql = "UPDATE users set plan='"+selectedPlan+"', numOfSearches='"+selectedPlanSearches+"', currentNumOfSearches='0', plan_expiration='"+date.getTime().toString()+"' WHERE email='"+savedSession.getEmail()+"'";
+
+                    crudInBackground.execute(sql, getString(R.string.crudURL), getString(R.string.crudApiKey));
+
 
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Payment Successful")
@@ -143,12 +164,18 @@ public class BuyFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    parentActivity.logout();
                                 }
                             })
-                            .setIcon(R.drawable.logo_red)
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    parentActivity.logout();
+                                }
+                            })
+                            .setIcon(R.drawable.logo)
                             .show();
 
-                    parentActivity.logout();
 
                 } catch (JSONException e) {
                     Log.e("Crash", "an extremely unlikely failure occurred: ", e);

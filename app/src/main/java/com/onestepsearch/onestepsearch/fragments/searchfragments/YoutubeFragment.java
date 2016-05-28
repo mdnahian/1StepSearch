@@ -29,10 +29,12 @@ import android.widget.Toast;
 import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.VideoViewerActivty;
+import com.onestepsearch.onestepsearch.activities.WebViewActivity;
 import com.onestepsearch.onestepsearch.core.InputFilter;
 import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Video;
 import com.onestepsearch.onestepsearch.parsers.ParseVideos;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,7 +170,7 @@ public class YoutubeFragment extends Fragment {
         videos = parseVideos.getVideos();
 
         if(videos.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString(), savedSession);
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in YouTube", savedSession);
 
             for(Video video : videos){
                 DownloadVideoData downloadVideoData = new DownloadVideoData(video);
@@ -212,12 +214,7 @@ public class YoutubeFragment extends Fragment {
             final ImageView downloadBtn = (ImageView) convertView.findViewById(R.id.downloadBtn);
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.downloadProgress);
 
-
-            if(video.getThumbnailBit() == null) {
-                new DownloadImageTask(thumbnail, video).execute(video.getThumbnail());
-            } else {
-                thumbnail.setImageBitmap(video.getThumbnailBit());
-            }
+            Picasso.with(getActivity()).load(video.getThumbnail()).into(thumbnail);
 
 
             title.setText(video.getTitle());
@@ -261,8 +258,19 @@ public class YoutubeFragment extends Fragment {
                     progressDialog.setMessage("Retrieving YouTube Video...");
                     progressDialog.show();
 
-                    DowloadYouTubeLinkForViewing dowloadYouTubeLinkForViewing = new DowloadYouTubeLinkForViewing(video.getTitle());
-                    dowloadYouTubeLinkForViewing.execute(getString(R.string.baseURL)+YOUTUBE_REQUEST_URL, "https://www.youtube.com/watch?v=" + video.getVideoURL());
+//                    DowloadYouTubeLinkForViewing dowloadYouTubeLinkForViewing = new DowloadYouTubeLinkForViewing(video.getTitle());
+//                    dowloadYouTubeLinkForViewing.execute(getString(R.string.baseURL)+YOUTUBE_REQUEST_URL, "https://www.youtube.com/watch?v=" + video.getVideoURL());
+
+
+                    String html = "<style> body{ margin:0; } </style> <iframe src=\"https://www.youtube.com/embed/"+video.getVideoURL()+"?autoplay=1\" frameborder=\"0\" allowfullscreen style=\"width:100%; height:100%;\"></iframe>";
+
+                    Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                    intent.putExtra("title", video.getTitle());
+                    intent.putExtra("html", html);
+                    startActivity(intent);
+
+                    progressDialog.dismiss();
+
                 }
             });
 
@@ -751,43 +759,6 @@ public class YoutubeFragment extends Fragment {
 
     }
 
-
-
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView thumbnail;
-        Video video;
-
-        public DownloadImageTask(ImageView thumbnail, Video video) {
-            this.thumbnail = thumbnail;
-            this.video = video;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            String urldisplay = params[0];
-
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.d("Crash", "Could not download image");
-            }
-            return mIcon11;
-        }
-
-
-        protected void onPostExecute(Bitmap result) {
-            if(result == null){
-                parentActivity.notConnectedDialog();
-            } else {
-                thumbnail.setImageBitmap(result);
-                video.setThumbnailBit(result);
-            }
-        }
-
-    }
 
 
 

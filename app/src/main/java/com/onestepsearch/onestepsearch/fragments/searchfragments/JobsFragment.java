@@ -19,6 +19,7 @@ import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.ViewJobActivity;
 import com.onestepsearch.onestepsearch.activities.WebViewActivity;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Job;
 import com.onestepsearch.onestepsearch.parsers.ParseJobs;
 
@@ -41,12 +42,16 @@ public class JobsFragment extends Fragment {
     private ArrayList<Job> jobs;
     private static final String JOB_REQUEST_URL = "jobs.php";
 
+    private SavedSession savedSession;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.list_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (ListView) rootView.findViewById(R.id.results);
 
@@ -133,7 +138,8 @@ public class JobsFragment extends Fragment {
         jobs = parseJobs.getJobs();
 
         if(jobs.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in Jobs",savedSession);
+
 
             JobsAdapter jobsAdapter = new JobsAdapter();
             results.setAdapter(jobsAdapter);

@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
                     sendEmail.execute(email, "do_not_reply@1stepsearch.com", "1Step Search - Verify Your Email Address",
                             "Hello " + username + ",<br><br>" +
                                     "To verify your email address " + email + ", please go to the following link:<br>" +
-                                    "<a href='http://1stepsearch.com/verification/" + verificationKey + "'>http://1stepsearch.com/verification/" + verificationKey + "</a>" +
+                                    "<a href='http://1stepsearch.com/verification.php?key=" + verificationKey + "'>http://1stepsearch.com/verification/" + verificationKey + "</a>" +
                                     "<br><br>" +
                                     "<small>This email was automatically generated. If you did not register for an account at 1Step Search, please disregard this email.</small>");
                 }
@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
             sendEmail.execute(email, "do_not_reply@1stepsearch.com", "1Step Search - Verify Your Email Address",
                     "Hello " + username + ",<br><br>" +
                             "To verify your email address " + email + ", please go to the following link:<br>" +
-                            "<a href='http://1stepsearch.com/verification/" + key + "'>http://1stepsearch.com/verification/" + key + "</a>" +
+                            "<a href='http://1stepsearch.com/verification.php?key=" + key + "'>http://1stepsearch.com/verification/" + key + "</a>" +
                             "<br><br>" +
                             "<small>This email was automatically generated. If you did not register for an account at 1Step Search, please disregard this email.</small>");
 
@@ -194,6 +194,8 @@ public class MainActivity extends Activity {
         savedSession.setPlan(sp1.getString("plan", null));
         savedSession.setNumOfSearches(sp1.getInt("numOfSearches", 0));
         savedSession.setCurrentNumOfSearches(sp1.getInt("currentNumOfSearches", 0));
+        savedSession.setEmailVerification(sp1.getString("emailVerification", null));
+        savedSession.setPlanExpiration(sp1.getString("plan_expiration", null));
 
         return savedSession;
     }
@@ -209,6 +211,8 @@ public class MainActivity extends Activity {
         ed.putString("plan", savedSession.getPlan());
         ed.putInt("numOfSearches", savedSession.getNumOfSearches());
         ed.putInt("currentNumOfSearches", savedSession.getCurrentNumOfSearches());
+        ed.putString("emailVerification", savedSession.getEmailVerification());
+        ed.putString("plan_expiration", savedSession.getPlanExpiration());
         ed.apply();
     }
 

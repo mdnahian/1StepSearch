@@ -28,8 +28,10 @@ import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.VideoViewerActivty;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Sermon;
 import com.onestepsearch.onestepsearch.parsers.ParseSermons;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,7 @@ public class SermonFragment extends Fragment {
     private ArrayList<Sermon> sermons;
     private static final String SERMON_REQUEST_URL = "sermons.php?q=";
 
+    private SavedSession savedSession;
 
     @Nullable
     @Override
@@ -58,6 +61,8 @@ public class SermonFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.list_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (ListView) rootView.findViewById(R.id.results);
 
@@ -139,7 +144,7 @@ public class SermonFragment extends Fragment {
         sermons = parseSermons.getSermons();
 
         if(sermons.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\"" + getArguments().getSerializable("query").toString() + "\"" + " in Sermons", savedSession);
 
             SermonsAdapter sermonsAdapter = new SermonsAdapter();
             results.setAdapter(sermonsAdapter);
@@ -184,30 +189,6 @@ public class SermonFragment extends Fragment {
             actionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if(SearchFragment.isPlaying){
-//                        actionBtn.setImageResource(R.drawable.play);
-//
-//                        if(SearchFragment.mediaPlayer != null && SearchFragment.mediaPlayer.isPlaying()) {
-//                            SearchFragment.playbackPosition = SearchFragment.mediaPlayer.getCurrentPosition();
-//                            SearchFragment.mediaPlayer.pause();
-//                        }
-//
-//                        SearchFragment.isPlaying = false;
-//                    } else{
-//                        actionBtn.setImageResource(R.drawable.pause);
-//
-//                        progressDialog.setMessage("Loading...");
-//                        progressDialog.show();
-//
-//                        try {
-//                            SearchFragment.playAudio(sermon.getDownlaodURL());
-//                        } catch(Exception e){
-//                            Log.d("Crash", "Could not play sermon");
-//                        }
-//
-//                        SearchFragment.isPlaying = true;
-//                    }
-
                     Intent intent = new Intent(getActivity().getApplicationContext(), VideoViewerActivty.class);
                     intent.putExtra("videoURL", sermon.getDownlaodURL());
                     intent.putExtra("videoTitle", sermon.getTitle());
@@ -226,11 +207,7 @@ public class SermonFragment extends Fragment {
             });
 
 
-            if(sermon.getProfileBit() == null) {
-                new DownloadImageTask(profile, sermon).execute(sermon.getImageURL());
-            } else {
-                profile.setImageBitmap(sermon.getProfileBit());
-            }
+            Picasso.with(getActivity()).load(sermon.getImageURL().replaceAll("//", "http://")).into(profile);
 
 
             title.setText(sermon.getTitle());
@@ -306,44 +283,6 @@ public class SermonFragment extends Fragment {
         } else{
             Log.d("Crash", "Could not download sermon, update os.");
         }
-    }
-
-
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView thumbnail;
-
-        Sermon sermon;
-
-        public DownloadImageTask(ImageView thumbnail, Sermon sermon){
-            this.thumbnail = thumbnail;
-            this.sermon = sermon;
-        }
-
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            String urldisplay = params[0];
-
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.d("Crash", "Could not download image");
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            if(result == null){
-                parentActivity.notConnectedDialog();
-            } else {
-                thumbnail.setImageBitmap(result);
-                sermon.setProfileBit(result);
-            }
-        }
-
     }
 
 

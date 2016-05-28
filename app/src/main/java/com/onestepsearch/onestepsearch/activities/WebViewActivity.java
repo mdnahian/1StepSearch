@@ -2,8 +2,11 @@ package com.onestepsearch.onestepsearch.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -34,13 +37,31 @@ public class WebViewActivity extends Activity {
         Intent intent = getIntent();
         String strTitle = intent.getStringExtra("title");
         String url = intent.getStringExtra("url");
+        String html = intent.getStringExtra("html");
 
-        webView = (WebView) findViewById(R.id.webView);
+        if(url != null){
+//            Log.d("Crash", url);
 
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setBuiltInZoomControls(true);
-        webView.setWebViewClient(new Callback());
-        webView.loadUrl(url);
+            WebSettings webSettings = webView.getSettings();
+            webSettings.setBuiltInZoomControls(true);
+            webView.setWebViewClient(new Callback());
+            webView.loadUrl(url);
+
+        } else if(html != null){
+
+            findViewById(R.id.topPanel).setVisibility(View.GONE);
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+            webView.setWebChromeClient(new WebChromeClient());
+            webView.setWebViewClient(new WebViewClient());
+            webView.clearCache(true);
+            webView.clearHistory();
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+            webView.loadData(html, "text/html", "utf-8");
+        }
 
         title.setText(strTitle);
 

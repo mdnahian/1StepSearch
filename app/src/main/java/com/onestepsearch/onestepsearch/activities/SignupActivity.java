@@ -130,7 +130,7 @@ public class SignupActivity extends MainActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })
-                            .setIcon(R.drawable.logo_red)
+                            .setIcon(R.drawable.logo)
                             .show();
 
                 } else {

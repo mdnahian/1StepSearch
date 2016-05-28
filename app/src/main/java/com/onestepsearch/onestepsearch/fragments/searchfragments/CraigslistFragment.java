@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.WebViewActivity;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.CraigslistAd;
 import com.onestepsearch.onestepsearch.parsers.ParseCraigslist;
 
@@ -45,6 +46,7 @@ public class CraigslistFragment extends Fragment {
     private static final String CRAIGSLIST_REQUEST_URL = "http://newyork.craigslist.org/search/sss?sort=rel&query=";
     private static final String CRAIGSLIST_PARSE_URL = "craigslist.php";
 
+    private SavedSession savedSession;
 
     @Nullable
     @Override
@@ -52,6 +54,8 @@ public class CraigslistFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.list_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (ListView) rootView.findViewById(R.id.results);
 
@@ -90,6 +94,7 @@ public class CraigslistFragment extends Fragment {
             if(s == null){
                 parentActivity.notConnectedDialog();
             } else {
+//                Log.d("Crash", s);
                 parseCraigslistHtml(s);
             }
         }
@@ -161,7 +166,8 @@ public class CraigslistFragment extends Fragment {
             if(s == null){
                 parentActivity.notConnectedDialog();
             } else {
-                parseCraigslistJSON(s);
+                Log.d("Crash", s);
+//                parseCraigslistJSON(s);
             }
         }
 
@@ -223,7 +229,7 @@ public class CraigslistFragment extends Fragment {
         craigslistAds = parseCraigslist.getCraigslistAds();
 
         if(craigslistAds.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in Craigslist",savedSession);
 
             CraigslistAdapter craigslistAdapter = new CraigslistAdapter();
             results.setAdapter(craigslistAdapter);

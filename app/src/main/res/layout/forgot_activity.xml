@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#930e0f">
+    android:background="@color/colorWhite">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,52 +74,6 @@
                     android:layout_marginBottom="15dp"/>
 
 
-                <EditText
-                    android:id="@+id/fnameField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="text"
-                    android:padding="5dp"
-                    android:hint="@string/fname"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
-
-                <EditText
-                    android:id="@+id/lnameField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="text"
-                    android:padding="5dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/lname"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
-
-                <EditText
-                    android:id="@+id/userField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="text"
-                    android:padding="5dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/username"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
-
-                <EditText
-                    android:id="@+id/phoneField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="phone"
-                    android:padding="5dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/phone"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
 
                 <EditText
                     android:id="@+id/emailField"
@@ -134,39 +88,15 @@
                     android:textColorHint="@color/colorGray"/>
 
 
-                <EditText
-                    android:id="@+id/passField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="textPassword"
-                    android:padding="5dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/password"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
-
-                <EditText
-                    android:id="@+id/confirmField"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="#eeeeee"
-                    android:inputType="textPassword"
-                    android:padding="5dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/confirm"
-                    android:textColor="@color/colorDark"
-                    android:textColorHint="@color/colorGray"/>
-
                 <TextView
-                    android:id="@+id/signupBtn"
+                    android:id="@+id/forgotBtn"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="#930e0f"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="@string/signup"
+                    android:text="@string/sendReset"
                     android:textColor="#ffffff"
                     android:textSize="20sp" />
 

@@ -26,6 +26,7 @@ import com.onestepsearch.onestepsearch.R;
 import com.onestepsearch.onestepsearch.activities.ParentActivity;
 import com.onestepsearch.onestepsearch.activities.ViewResumeActivity;
 import com.onestepsearch.onestepsearch.core.InputFilter;
+import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.data.Resume;
 import com.onestepsearch.onestepsearch.parsers.ParseResumes;
 
@@ -53,12 +54,18 @@ public class ResumeFragment extends Fragment {
     private ArrayList<Resume> resumes;
     private static final String RESUME_REQUEST_URL = "resumes.php";
 
+
+    private SavedSession savedSession;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.list_fragment, container, false);
 
         parentActivity = (ParentActivity) getActivity();
+
+        savedSession = (SavedSession) getActivity().getIntent().getSerializableExtra("SavedSession");
 
         results = (ListView) rootView.findViewById(R.id.results);
 
@@ -250,7 +257,7 @@ public class ResumeFragment extends Fragment {
         resumes = parseResumes.getResumes();
 
         if(resumes.size() > 0){
-            ((ParentActivity) getActivity()).addSearchQuery(getArguments().getSerializable("query").toString());
+            ((ParentActivity) getActivity()).addSearchQuery("\""+getArguments().getSerializable("query").toString()+"\""+" in Resumes", savedSession);
 
             ResumeAdapter resumeAdapter = new ResumeAdapter();
             results.setAdapter(resumeAdapter);

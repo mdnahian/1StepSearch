@@ -1,6 +1,7 @@
 package com.onestepsearch.onestepsearch.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,11 +30,17 @@ public class LoginActivity extends MainActivity {
     private boolean isSessionSaved;
     private SavedSession savedSession;
 
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("Loading...");
 
         savedSession = getSavedSession();
         if(savedSession.getUsername() != null){
@@ -68,12 +75,18 @@ public class LoginActivity extends MainActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                progressDialog.show();
+
                 String username = userField.getText().toString();
                 String password = passField.getText().toString();
 
                 if(InputFilter.checkNumCharacters(username, 0) && InputFilter.checkNumCharacters(password, 0)){
                     login(username, password);
                 } else{
+
+                    progressDialog.dismiss();
+
                     new AlertDialog.Builder(LoginActivity.this)
                             .setTitle("Try Again")
                             .setMessage("Please provide a valid username and password.")
@@ -82,7 +95,7 @@ public class LoginActivity extends MainActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })
-                            .setIcon(R.drawable.logo_red)
+                            .setIcon(R.drawable.logo)
                             .show();
                 }
 
@@ -123,6 +136,9 @@ public class LoginActivity extends MainActivity {
                 parseResponse.execute();
 
                 if(parseResponse.isError()){
+
+                    progressDialog.dismiss();
+
                     new AlertDialog.Builder(LoginActivity.this)
                             .setTitle("Try Again")
                             .setMessage("Username or Password Incorrect")
@@ -131,7 +147,7 @@ public class LoginActivity extends MainActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })
-                            .setIcon(R.drawable.logo_red)
+                            .setIcon(R.drawable.logo)
                             .show();
                 } else {
                     ArrayList objects = parseResponse.getObjects();
@@ -154,8 +170,14 @@ public class LoginActivity extends MainActivity {
 
                         if(savedSession.getUsername() != null && savedSession.getEmailVerification().equals("true")){
                             createSavedSession(savedSession);
+
+                            progressDialog.dismiss();
+
                             onPostLogin();
                         } else {
+
+                            progressDialog.dismiss();
+
                             new AlertDialog.Builder(LoginActivity.this)
                                 .setTitle("Confirm Email Address")
                                 .setMessage("You have not yet confirmed your email address "+savedSession.getEmail()+".")
@@ -170,7 +192,7 @@ public class LoginActivity extends MainActivity {
                                         sendVerificationEmail(savedSession.getUsername(), savedSession.getEmail(), "");
                                     }
                                 })
-                                .setIcon(R.drawable.logo_red)
+                                .setIcon(R.drawable.logo)
                                 .show();
                         }
 
@@ -186,7 +208,6 @@ public class LoginActivity extends MainActivity {
         String sql = "SELECT * FROM users WHERE username='"+username+"' AND password='"+password+"'";
 
         crudInBackground.execute(sql, getString(R.string.crudURL), getString(R.string.crudApiKey));
-
 
     }
 

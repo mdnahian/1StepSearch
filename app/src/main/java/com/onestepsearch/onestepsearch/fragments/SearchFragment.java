@@ -1,10 +1,12 @@
 package com.onestepsearch.onestepsearch.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -121,10 +123,7 @@ public class SearchFragment extends Fragment {
         homeView = (LinearLayout) rootView.findViewById(R.id.homeView);
 
         greeting = (TextView) rootView.findViewById(R.id.greeting);
-        String strGreeting = "Hello, "+ savedSession.getFname()+"\n"+
-                "Current Plan: "+savedSession.getPlan()+"\n"+
-                "Searches: "+savedSession.getCurrentNumOfSearches()+"/"+savedSession.getNumOfSearches();
-        greeting.setText(strGreeting);
+        updateGreeting();
 
         mic = (ImageView) rootView.findViewById(R.id.mic);
         mic.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +153,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 1;
                 youtubeTab();
+                updateGreeting();
             }
         });
 
@@ -164,6 +164,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 2;
                 imageTab();
+                updateGreeting();
             }
         });
 
@@ -174,6 +175,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 3;
                 musicTab();
+                updateGreeting();
             }
         });
 
@@ -183,6 +185,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 4;
                 jobsTab();
+                updateGreeting();
             }
         });
 
@@ -200,6 +203,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 5;
                 resumeTab();
+                updateGreeting();
             }
         });
 
@@ -207,8 +211,18 @@ public class SearchFragment extends Fragment {
         craigslistBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tab = 6;
-                craigslistTab();
+//                tab = 6;
+//                craigslistTab();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Coming Soon!")
+                        .setMessage("Craigslist search will be available soon.")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(R.drawable.logo)
+                        .show();
             }
         });
 
@@ -219,6 +233,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 tab = 7;
                 sermonTab();
+                updateGreeting();
             }
         });
 
@@ -240,6 +255,51 @@ public class SearchFragment extends Fragment {
             Log.d("Crash", "Made new OneStepSearch folder...");
         }
 
+
+        String category = getActivity().getIntent().getStringExtra("category");
+        String query = getActivity().getIntent().getStringExtra("query");
+
+        if(category != null){
+            searchBar.setText(query);
+
+            switch (category) {
+                case "YouTube":
+                    tab = 1;
+                    youtubeTab();
+                    break;
+                case "Images":
+                    tab = 2;
+                    imageTab();
+                    break;
+                case "Music":
+                    tab = 3;
+                    musicTab();
+                    break;
+                case "Jobs":
+                    tab = 4;
+                    jobsTab();
+                    break;
+                case "Resumes":
+                    tabSet = 2;
+                    moreTab();
+                    tab = 5;
+                    resumeTab();
+                    break;
+                case "Craigslist":
+                    tabSet = 2;
+                    moreTab();
+                    tab = 6;
+                    craigslistTab();
+                    break;
+                case "Sermons":
+                    tabSet = 2;
+                    moreTab();
+                    tab = 7;
+                    sermonTab();
+                    break;
+            }
+
+        }
 
         return rootView;
     }
@@ -289,6 +349,13 @@ public class SearchFragment extends Fragment {
     }
 
 
+    private void updateGreeting(){
+        String strGreeting = "Hello, "+ savedSession.getFname()+"\n"+
+                "Current Plan: "+savedSession.getPlan()+"\n"+
+                "Searches: "+savedSession.getCurrentNumOfSearches()+"/"+savedSession.getNumOfSearches();
+        greeting.setText(strGreeting);
+    }
+
 
 
     private void youtubeTab(){
@@ -304,7 +371,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -321,7 +387,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -338,7 +403,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -355,7 +419,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -408,7 +471,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -424,7 +486,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 
@@ -440,7 +501,6 @@ public class SearchFragment extends Fragment {
         searchBar.setHint(newHint);
 
         showMic();
-        searchBar.setText("");
         //((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
     }
 

@@ -17,9 +17,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -29,6 +31,7 @@ import com.onestepsearch.onestepsearch.core.CrudInBackground;
 import com.onestepsearch.onestepsearch.core.OnTaskCompleted;
 import com.onestepsearch.onestepsearch.core.SavedSession;
 import com.onestepsearch.onestepsearch.fragments.AboutFragment;
+import com.onestepsearch.onestepsearch.fragments.AccountFragment;
 import com.onestepsearch.onestepsearch.fragments.BuyFragment;
 import com.onestepsearch.onestepsearch.fragments.DownloadsFragment;
 import com.onestepsearch.onestepsearch.fragments.HistoryFragment;
@@ -73,13 +76,29 @@ public class ParentActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        TextView email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.email);
+        email.setText(savedSession.getEmail());
+
 
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.nav_search);
 
             Fragment fragment = new SearchFragment();
+
+            String category = getIntent().getStringExtra("category");
+            String query = getIntent().getStringExtra("query");
+
+            if(category != null){
+                Bundle bundle = new Bundle();
+                bundle.putString("category", category);
+                bundle.putString("query", query);
+
+                fragment.setArguments(bundle);
+            }
+
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
         }
     }
 
@@ -128,7 +147,9 @@ public class ParentActivity extends AppCompatActivity
             fragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.nav_account) {
-
+            AccountFragment fragment = new AccountFragment();
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.nav_signout) {
             logout();
         }
@@ -148,7 +169,7 @@ public class ParentActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setIcon(R.drawable.logo_red)
+                .setIcon(R.drawable.logo)
                 .show();
 
 
@@ -203,7 +224,7 @@ public class ParentActivity extends AppCompatActivity
         if(savedSession != null){
 
             if(savedSession.getPlan().equals("free")) {
-                if (savedSession.getCurrentNumOfSearches() >= savedSession.getNumOfSearches()) {
+                if (savedSession.getCurrentNumOfSearches() > savedSession.getNumOfSearches()) {
                     maxSearchesMet(savedSession.getNumOfSearches());
                 } else {
 
@@ -227,6 +248,12 @@ public class ParentActivity extends AppCompatActivity
                         @Override
                         public void onTaskComplete(String response) {
                             savedSession.setCurrentNumOfSearches(newNumberOfSearches);
+
+                            SharedPreferences sp = getSharedPreferences("SavedSession", 0);
+                            SharedPreferences.Editor ed = sp.edit();
+                            ed.putInt("currentNumOfSearches", newNumberOfSearches);
+                            ed.apply();
+
                         }
                     });
 
@@ -236,9 +263,10 @@ public class ParentActivity extends AppCompatActivity
                 }
             } else {
 
+                Log.d("Crash", "Paid plan");
 
                 try {
-                    DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+                    DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
                     Date date = format.parse(savedSession.getPlanExpiration());
 
                     if(date.after(new Date())){
@@ -264,6 +292,11 @@ public class ParentActivity extends AppCompatActivity
                                 @Override
                                 public void onTaskComplete(String response) {
                                     savedSession.setCurrentNumOfSearches(newNumberOfSearches);
+
+                                    SharedPreferences sp = getSharedPreferences("SavedSession", 0);
+                                    SharedPreferences.Editor ed = sp.edit();
+                                    ed.putInt("currentNumOfSearches", newNumberOfSearches);
+                                    ed.apply();
                                 }
                             });
 
@@ -322,11 +355,15 @@ public class ParentActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setIcon(R.drawable.logo_red)
+                .setIcon(R.drawable.logo)
                 .show();
 
+        navigationView.setCheckedItem(R.id.nav_buy);
 
-//        buy(new TextView(this));
+        Fragment fragment = new BuyFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
     }
 
 
@@ -341,11 +378,15 @@ public class ParentActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setIcon(R.drawable.logo_red)
+                .setIcon(R.drawable.logo)
                 .show();
 
+        navigationView.setCheckedItem(R.id.nav_buy);
 
-//        buy(new TextView(this));
+        Fragment fragment = new BuyFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
     }
 
 
